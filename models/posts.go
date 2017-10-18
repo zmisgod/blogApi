@@ -1,19 +1,33 @@
 package models
 
 import (
+	"errors"
+	"fmt"
 	"time"
 
 	"github.com/astaxie/beego/orm"
 )
 
 type Posts struct {
-	ID           int       `json:"id"`
-	PostAuthor   int       `json:"post_author"`
+	PostContent  string    `json:"post_content"`
+	Id           int       `json:"id"`
+	PostAuthor   string    `json:"post_author"`
 	PostStatus   string    `json:"post_status"`
 	CommentCount int       `json:"comment_count"`
 	PostDate     time.Time `json:"post_date"`
-	PostContent  string    `json:"post_content"`
 	PostIntro    string    `json:"post_intro"`
+}
+
+func OneArticle(articleId int) (Posts, error) {
+	post := Posts{Id: articleId}
+	o := orm.NewOrm()
+	err := o.Read(&post)
+	if err == orm.ErrNoRows {
+		fmt.Println(errors.New("NOT"))
+		return post, errors.New("404")
+	} else {
+		return post, nil
+	}
 }
 
 func (a *Posts) Insert() error {
