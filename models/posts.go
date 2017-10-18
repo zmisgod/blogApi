@@ -2,7 +2,6 @@ package models
 
 import (
 	"errors"
-	"fmt"
 	"time"
 
 	"github.com/astaxie/beego/orm"
@@ -23,7 +22,6 @@ func OneArticle(articleId int) (Posts, error) {
 	o := orm.NewOrm()
 	err := o.Read(&post)
 	if err == orm.ErrNoRows {
-		fmt.Println(errors.New("NOT"))
 		return post, errors.New("404")
 	} else {
 		return post, nil
