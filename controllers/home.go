@@ -55,11 +55,11 @@ func (h *HomeController) Get() {
 		article   models.Posts
 	)
 	if articleId, err = strconv.Atoi(h.Ctx.Input.Param(":articleId")); err != nil {
-		h.SendJSON(403, "", err.Error())
+		h.SendJSON(400, "", "invalid params")
 	} else {
 		article, err = models.OneArticle(articleId)
 		if err != nil {
-			h.SendJSON(403, "", err.Error())
+			h.SendJSON(400, "", "empty data")
 		} else {
 			h.SendJSON(200, article, "successful")
 		}
