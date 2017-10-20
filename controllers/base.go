@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"blogapi/util"
-	"strings"
 
 	"github.com/astaxie/beego"
 )
@@ -16,13 +15,13 @@ type BaseController struct {
 	cache          *util.MyCache
 }
 
-func (this *BaseController) Prepare() {
-	controllerName, actionName := this.GetControllerAndAction()
-	this.moduleName = "blog"
-	this.controllerName = strings.ToLower(controllerName[0 : len(controllerName)-10])
-	this.actionName = strings.ToLower(actionName)
-	cache,_ := util.
-}
+// func (this *BaseController) Prepare() {
+// 	controllerName, actionName := this.GetControllerAndAction()
+// 	this.moduleName = "blog"
+// 	this.controllerName = strings.ToLower(controllerName[0 : len(controllerName)-10])
+// 	this.actionName = strings.ToLower(actionName)
+// 	cache,_ := util.
+// }
 
 func (this *BaseController) SendJSON(code int, data interface{}, msg string) {
 	out := make(map[string]interface{})

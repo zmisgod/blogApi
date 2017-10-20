@@ -37,6 +37,7 @@ func (h *HomeController) GetAll() {
 	for k, v := range list {
 		row := make(map[string]interface{})
 		row["id"] = v.Id
+		row["post_title"] = v.PostTitle
 		row["post_author"] = v.PostAuthor
 		row["post_status"] = v.PostStatus
 		row["comment_count"] = v.CommentCount

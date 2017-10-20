@@ -5,11 +5,10 @@ import (
 	_ "blogapi/routers"
 
 	"github.com/astaxie/beego"
-	"github.com/astaxie/beego/cache"
 )
 
 func init() {
-	cache, err := cache.NewCache("redis", `{"key":"collectionName","conn":":6039","dbNum":"0","password":""}`)
+	// cache, err := cache.NewCache("redis", `{"key":"collectionName","conn":":6039","dbNum":"0","password":""}`)
 
 	models.Init()
 }

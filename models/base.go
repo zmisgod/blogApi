@@ -2,7 +2,6 @@ package models
 
 import (
 	"github.com/astaxie/beego"
-	"github.com/astaxie/beego/cache"
 	"github.com/astaxie/beego/orm"
 	_ "github.com/go-sql-driver/mysql"
 )

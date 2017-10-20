@@ -10,6 +10,7 @@ import (
 type Posts struct {
 	PostContent  string    `json:"post_content"`
 	Id           int       `json:"id"`
+	PostTitle    string    `json:"post_title"`
 	PostAuthor   string    `json:"post_author"`
 	PostStatus   string    `json:"post_status"`
 	CommentCount int       `json:"comment_count"`
