@@ -35,14 +35,21 @@ func ArticleAll(page, pagesize int) interface{} {
 }
 
 func Tests(page int) interface{} {
-	o := orm.NewOrm()
-	res, err := o.Raw("select * from wps_posts where post_status = 'publish' and ID = ?", page).Exec()
+	stmt, err := db_conn.Query("select ID,post_content from wps_posts where post_status = 'publish' and ID = ?", page)
 	if err != nil {
 		fmt.Println(err)
 	}
-	fmt.Println(res.LastInsertId())
-	fmt.Println(res.RowsAffected())
-	return res
+	for stmt.Next() {
+		var ID int
+		var post_content string
+		err = stmt.Scan(&ID, &post_content)
+		if err != nil {
+			fmt.Println(err)
+		}
+		fmt.Println(post_content)
+		fmt.Println(ID)
+	}
+	return stmt
 }
 
 func ArticleOne(articleId int) (PostInfo, string) {

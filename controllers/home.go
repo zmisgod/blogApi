@@ -33,17 +33,19 @@ func (h *HomeController) Get() {
 	var (
 		err       error
 		articleId int
-		article   models.PostInfo
-		c_err     string
+		// article   models.PostInfo
+		// c_err string
 	)
 	if articleId, err = strconv.Atoi(h.Ctx.Input.Param(":articleId")); err != nil {
 		h.SendJSON(400, "", "invalid params")
 	} else {
-		article, c_err = models.ArticleOne(articleId)
-		if c_err == "" {
-			h.SendJSON(200, article, "successful")
-		} else {
-			h.SendJSON(400, "", c_err)
-		}
+		res := models.Tests(articleId)
+		h.SendJSON(200, res, "successful")
+		// article, c_err = models.ArticleOne(articleId)
+		// if c_err == "" {
+		// 	h.SendJSON(200, article, "successful")
+		// } else {
+		// 	h.SendJSON(400, "", c_err)
+		// }
 	}
 }
