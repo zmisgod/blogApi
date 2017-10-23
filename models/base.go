@@ -22,12 +22,15 @@ func Init() {
 		dbport = "3306"
 	}
 	dsn := dbuser + ":" + dbpassword + "@tcp(" + dbhost + ":" + dbport + ")/" + dbname + "?charset=utf8&loc=Asia%2FShanghai"
-	// orm.RegisterDataBase("default", "mysql", dsn)
-	// orm.RegisterModel(new(Posts))
 	db_conn, err = sql.Open("mysql", dsn)
 	if err != nil {
 		panic(err)
 	}
+	//用于设置最大打开的连接数，默认值为0表示不限制。
+	db_conn.SetMaxOpenConns(2000)
+	//用于设置闲置的连接数。
+	db_conn.SetMaxIdleConns(1000)
+	db_conn.Ping()
 }
 
 func TableName(str string) string {
