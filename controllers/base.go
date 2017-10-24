@@ -15,14 +15,6 @@ type BaseController struct {
 	cache          *util.MyCache
 }
 
-// func (this *BaseController) Prepare() {
-// 	controllerName, actionName := this.GetControllerAndAction()
-// 	this.moduleName = "blog"
-// 	this.controllerName = strings.ToLower(controllerName[0 : len(controllerName)-10])
-// 	this.actionName = strings.ToLower(actionName)
-// 	cache,_ := util.
-// }
-
 func (this *BaseController) SendJSON(code int, data interface{}, msg string) {
 	out := make(map[string]interface{})
 	out["code"] = code
@@ -30,4 +22,10 @@ func (this *BaseController) SendJSON(code int, data interface{}, msg string) {
 	out["msg"] = msg
 	this.Data["json"] = out
 	this.ServeJSON()
+}
+
+func (this *BaseController) CheckError(err error) {
+	if err != nil {
+		this.SendJSON(400, "", err.Error())
+	}
 }

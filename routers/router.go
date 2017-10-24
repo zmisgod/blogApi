@@ -29,11 +29,6 @@ func init() {
 				&controllers.ObjectController{},
 			),
 		),
-		beego.NSNamespace("/user",
-			beego.NSInclude(
-				&controllers.UserController{},
-			),
-		),
 		beego.NSNamespace("/home",
 			beego.NSInclude(
 				&controllers.HomeController{},

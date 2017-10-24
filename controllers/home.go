@@ -24,7 +24,7 @@ func (h *HomeController) GetAll() {
 		page = 1
 	}
 	pagesize := 12
-	resultss := models.ArticleAll(page, pagesize)
+	resultss, _ := models.ArticleAll(page, pagesize)
 	h.SendJSON(200, resultss, "successful")
 }
 
@@ -32,20 +32,13 @@ func (h *HomeController) GetAll() {
 func (h *HomeController) Get() {
 	var (
 		err       error
-		articleId int
-		// article   models.PostInfo
-		// c_err string
+		articleID int
 	)
-	if articleId, err = strconv.Atoi(h.Ctx.Input.Param(":articleId")); err != nil {
+	if articleID, err = strconv.Atoi(h.Ctx.Input.Param(":articleId")); err != nil {
 		h.SendJSON(400, "", "invalid params")
 	} else {
-		res := models.Tests(articleId)
+		res, err := models.ArticleOne(articleID)
+		h.CheckError(err)
 		h.SendJSON(200, res, "successful")
-		// article, c_err = models.ArticleOne(articleId)
-		// if c_err == "" {
-		// 	h.SendJSON(200, article, "successful")
-		// } else {
-		// 	h.SendJSON(400, "", c_err)
-		// }
 	}
 }
