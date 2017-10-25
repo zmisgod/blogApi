@@ -42,14 +42,6 @@ func CheckError(err error) error {
 	return nil
 }
 
-func CheckEmpty(data interface{}) bool {
-	v := reflect.ValueOf(data)
-	if v.Kind() == reflect.Ptr {
-		v = v.Elem()
-	}
-	return v.Interface() == reflect.Zero(v.Type()).Interface()
-}
-
 func TableName(str string) string {
 	return beego.AppConfig.String("dbprefix") + str
 }
