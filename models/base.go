@@ -3,6 +3,7 @@ package models
 import (
 	"database/sql"
 	"fmt"
+	"reflect"
 
 	"github.com/astaxie/beego"
 	_ "github.com/go-sql-driver/mysql"
@@ -39,6 +40,14 @@ func CheckError(err error) error {
 		fmt.Println(err.Error())
 	}
 	return nil
+}
+
+func CheckEmpty(data interface{}) bool {
+	v := reflect.ValueOf(data)
+	if v.Kind() == reflect.Ptr {
+		v = v.Elem()
+	}
+	return v.Interface() == reflect.Zero(v.Type()).Interface()
 }
 
 func TableName(str string) string {
@@ -79,6 +88,9 @@ func DBQueryRow(rows *sql.Rows) (interface{}, error) {
 			//保存
 			result[col] = v
 		}
+	}
+	if result == nil {
+		return "", nil
 	}
 	return result, nil
 }

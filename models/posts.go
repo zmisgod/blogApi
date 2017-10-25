@@ -1,30 +1,31 @@
 package models
 
-import (
-	"time"
-)
-
-type postDetail struct {
-	ID            int       `json:"id"`
-	post_title    string    `json:"post_title"`
-	post_author   string    `json:"post_author"`
-	post_status   string    `json:"post_status"`
-	comment_count int       `json:"comment_count"`
-	post_date     time.Time `json:"post_date"`
-	post_intro    string    `json:"post_intro"`
-	post_content  string    `json:"post_content"`
-}
-
 func ArticleAll(page, pagesize int) (interface{}, error) {
 	rows, _ := dbConn.Query(
-		"select ID,post_title,post_author,post_status,comment_count,post_date,post_intro from wps_posts where post_status = 'publish' order by ID DESC limit ? offset ?",
+		"select p.ID as id,p.post_title,p.post_author,p.comment_count,p.post_date,p.post_intro,tm.name as category_name,u.user_nicename as author from wps_posts as p left join wps_term_relationships as rs on rs.object_id = p.ID left join wps_term_taxonomy as t on t.term_taxonomy_id = rs.term_taxonomy_id left join wps_terms as tm on tm.`term_id` = t.term_id left join wps_users as u on p.post_author = u.ID where p.post_status=?  and t.taxonomy = ? order by ID DESC limit ? offset ?",
+		"publish",
+		"category",
 		pagesize,
 		(page-1)*pagesize,
 	)
 	return DBQueryRows(rows)
 }
 
-func ArticleOne(articleId int, args ...string) (interface{}, error) {
-	row, _ := dbConn.Query("select ID,post_title,post_author,post_status,comment_count,post_date,post_intro,post_content  from wps_posts where ID = ? AND post_status= ?", articleId, "publish")
+func ArticleOne(articleId int) (interface{}, error) {
+	row, _ := dbConn.Query(
+		"select p.ID as id,p.post_title,p.post_content,p.comment_count,p.post_date,p.post_intro,tm.name as category_name,u.user_nicename as author,t.term_taxonomy_id as category_id from wps_posts as p left join wps_term_relationships as rs on rs.object_id = p.ID left join wps_term_taxonomy as t on t.term_taxonomy_id = rs.term_taxonomy_id left join wps_terms as tm on tm.`term_id` = t.term_id left join wps_users as u on p.post_author = u.ID where p.ID = ? and p.post_status=?  and t.taxonomy = ?",
+		articleId,
+		"publish",
+		"category",
+	)
 	return DBQueryRow(row)
+}
+
+func ArticleTag(articleId int) (interface{}, error) {
+	rows, _ := dbConn.Query(
+		"select tm.name as category_name,t.term_taxonomy_id as category_id from wps_posts as p left join wps_term_relationships as rs on rs.object_id = p.ID left join wps_term_taxonomy as t on t.term_taxonomy_id = rs.term_taxonomy_id left join wps_terms as tm on tm.`term_id` = t.term_id where p.ID = ? and t.taxonomy = ?",
+		articleId,
+		"post_tag",
+	)
+	return DBQueryRows(rows)
 }
