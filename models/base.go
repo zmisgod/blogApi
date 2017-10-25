@@ -45,6 +45,44 @@ func TableName(str string) string {
 	return beego.AppConfig.String("dbprefix") + str
 }
 
+func DBQueryRow(rows *sql.Rows) (interface{}, error) {
+	columns, err := rows.Columns()
+	if err != nil {
+		return "", err
+	}
+	count := len(columns)
+	//定义输出的类型
+	result := make(map[string]interface{})
+	//这个是sql查询出来的字段
+	values := make([]interface{}, count)
+	//保存sql查询出来的对应的地址
+	valuePtrs := make([]interface{}, count)
+	for rows.Next() {
+		for i := 0; i < count; i++ {
+			valuePtrs[i] = &values[i]
+		}
+		//scansql查询出来的字段的地址
+		rows.Scan(valuePtrs...)
+
+		//开始循环columns
+		for i, col := range columns {
+			var v interface{}
+			//值
+			val := values[i]
+			//判读值的类型（interface类型）如果是byte，则需要转换成字符串
+			b, ok := val.([]byte)
+			if ok {
+				v = string(b)
+			} else {
+				v = val
+			}
+			//保存
+			result[col] = v
+		}
+	}
+	return result, nil
+}
+
 func DBQueryRows(rows *sql.Rows) (interface{}, error) {
 	columns, err := rows.Columns()
 	if err != nil {
@@ -78,39 +116,4 @@ func DBQueryRows(rows *sql.Rows) (interface{}, error) {
 	}
 
 	return tableData, nil
-}
-
-func DBQueryRow(rows *sql.Rows) (interface{}, string) {
-	columns, err := rows.Columns()
-	if err != nil {
-		return "", err.Error()
-	}
-	count := len(columns)
-	tableData := make([]map[string]interface{}, 0)
-	values := make([]interface{}, count)
-	valuePtrs := make([]interface{}, count)
-	for rows.Next() {
-		for i := 0; i < count; i++ {
-			valuePtrs[i] = &values[i]
-		}
-		rows.Scan(valuePtrs...)
-		entry := make(map[string]interface{})
-		for i, col := range columns {
-			var v interface{}
-			val := values[i]
-			b, ok := val.([]byte)
-			if ok {
-				v = string(b)
-			} else {
-				v = val
-			}
-			entry[col] = v
-		}
-		tableData = append(tableData, entry)
-	}
-	if err != nil {
-		return "", err.Error()
-	}
-
-	return tableData, ""
 }

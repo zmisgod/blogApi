@@ -37,7 +37,8 @@ func (h *HomeController) Get() {
 	if articleID, err = strconv.Atoi(h.Ctx.Input.Param(":articleId")); err != nil {
 		h.SendJSON(400, "", "invalid params")
 	} else {
-		res, err := models.ArticleOne(articleID)
+		var sres string
+		res, err := models.ArticleOne(articleID, sres)
 		h.CheckError(err)
 		h.SendJSON(200, res, "successful")
 	}
