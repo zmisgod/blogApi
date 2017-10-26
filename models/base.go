@@ -89,6 +89,9 @@ func DBQueryRow(rows *sql.Rows) (interface{}, error) {
 }
 
 func DBQueryRows(rows *sql.Rows) (interface{}, error) {
+	if rows == nil {
+		return "", errors.New("empty data")
+	}
 	columns, err := rows.Columns()
 	if err != nil {
 		return "", err
