@@ -24,7 +24,8 @@ func (h *HomeController) GetAll() {
 		page = 1
 	}
 	pagesize := 12
-	resultss, _ := models.ArticleAll(page, pagesize)
+	resultss, err := models.GetArticleLists(page, pagesize)
+	h.CheckError(err)
 	h.SendJSON(200, resultss, "successful")
 }
 
@@ -39,6 +40,14 @@ func (h *HomeController) Get() {
 	} else {
 		res, err := models.ArticleOne(articleID)
 		h.CheckError(err)
+		data, ok := res.(map[string]interface{})
+		if ok {
+			tags, err := models.ArticleTags(articleID)
+			if err != nil {
+				tags = make([]interface{}, 0)
+			}
+			data["tag"] = tags
+		}
 		h.SendJSON(200, res, "successful")
 	}
 }

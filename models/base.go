@@ -2,8 +2,8 @@ package models
 
 import (
 	"database/sql"
+	"errors"
 	"fmt"
-	"reflect"
 
 	"github.com/astaxie/beego"
 	_ "github.com/go-sql-driver/mysql"
@@ -81,8 +81,9 @@ func DBQueryRow(rows *sql.Rows) (interface{}, error) {
 			result[col] = v
 		}
 	}
-	if result == nil {
-		return "", nil
+	_, ok := result["id"]
+	if !ok {
+		return "", errors.New("params invalid")
 	}
 	return result, nil
 }
@@ -115,9 +116,8 @@ func DBQueryRows(rows *sql.Rows) (interface{}, error) {
 		}
 		tableData = append(tableData, entry)
 	}
-	if err != nil {
-		return "", err
+	if len(tableData) == 0 {
+		return "", errors.New("invalid params")
 	}
-
 	return tableData, nil
 }
