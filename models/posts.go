@@ -2,6 +2,7 @@ package models
 
 import (
 	"fmt"
+	"strconv"
 )
 
 func ArticleAll(page, pagesize int) (interface{}, error) {
@@ -40,14 +41,16 @@ func GetArticleLists(page, pagesize int) (interface{}, error) {
 				ids = append(ids, v)
 			}
 		}
-		fmt.Println(ids)
-		// res := strings.Join(ids, ",")
-		// fmt.Println(res)
-		// tags, err := ArticleTagsLists(res)
-		// if err != nil {
-		// 	return "", err
-		// }
-		// fmt.Println(tags)
+		var tagIds string
+		for _, v := range ids {
+			tagIds += "," + strconv.FormatInt(v, 10)
+		}
+		tagRune := []rune(tagIds)
+		finnalTag := string(tagRune[1:])
+		tags, err := ArticleTagsLists(finnalTag)
+		if err == nil {
+			fmt.Println(tags)
+		}
 	}
 	return lists, nil
 }
@@ -72,10 +75,7 @@ func ArticleTags(articleId int) (interface{}, error) {
 }
 
 func ArticleTagsLists(articleIds string) (interface{}, error) {
-	rows, _ := dbConn.Query(
-		"select tm.name as category_name,t.term_taxonomy_id as category_id from wps_posts as p left join wps_term_relationships as rs on rs.object_id = p.ID left join wps_term_taxonomy as t on t.term_taxonomy_id = rs.term_taxonomy_id left join wps_terms as tm on tm.`term_id` = t.term_id where p.ID in (?) and t.taxonomy = ?",
-		articleIds,
-		"post_tag",
-	)
+	sqlSte := fmt.Sprintf("select tm.name as category_name,t.term_taxonomy_id as category_id from wps_posts as p left join wps_term_relationships as rs on rs.object_id = p.ID left join wps_term_taxonomy as t on t.term_taxonomy_id = rs.term_taxonomy_id left join wps_terms as tm on tm.`term_id` = t.term_id where p.ID in (%s) and t.taxonomy ='%s'", articleIds, "post_tag")
+	rows, _ := dbConn.Query(sqlSte)
 	return DBQueryRows(rows)
 }
