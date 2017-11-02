@@ -38,46 +38,42 @@ func GetArticleLists(page, pagesize int) (interface{}, error) {
 	if err != nil {
 		return "", err
 	}
-	data, ok := lists.([]map[string]interface{})
-	if ok {
-		ids := make([]int64, 0)
-		for _, value := range data {
-			v, ok := value["id"].(int64)
-			if ok {
-				ids = append(ids, v)
-			}
+	data, _ := lists.([]map[string]interface{})
+	ids := make([]int64, 0)
+	for _, value := range data {
+		v, ok := value["id"].(int64)
+		if ok {
+			ids = append(ids, v)
 		}
-		var tagIds string
-		for _, v := range ids {
-			tagIds += "," + strconv.FormatInt(v, 10)
-		}
-		tagRune := []rune(tagIds)
-		finalTag := string(tagRune[1:])
-		tags, err := ArticleTagsLists(finalTag)
-		if err == nil {
-			mTags, _ := tags.([]map[string]interface{})
-			tagsBind := make(map[string]interface{}, 0)
-			for _, vs := range ids {
-				var tagDetail []interface{}
-				tagID := strconv.FormatInt(vs, 10)
-				for _, de := range mTags {
-					tagDID, _ := de["id"].(string)
-					if tagID == tagDID && len(de) != 0 {
-						tagDetail = append(tagDetail, de)
-					}
+	}
+	var tagIds string
+	for _, v := range ids {
+		tagIds += "," + strconv.FormatInt(v, 10)
+	}
+	tagRune := []rune(tagIds)
+	finalTag := string(tagRune[1:])
+	tags, err := ArticleTagsLists(finalTag)
+	if err == nil {
+		mTags, _ := tags.([]map[string]interface{})
+		tagsBind := make(map[string]interface{}, 0)
+		for _, vs := range ids {
+			var tagDetail []interface{}
+			tagID := strconv.FormatInt(vs, 10)
+			for _, de := range mTags {
+				tagDID, _ := de["id"].(string)
+				if tagID == tagDID && len(de) != 0 {
+					tagDetail = append(tagDetail, de)
 				}
-				tagsBind[tagID] = tagDetail
 			}
-			postResult, _ := lists.([]map[string]interface{})
-			for _, post := range postResult {
-				postId := post["id"].(int64)
-				postID := strconv.FormatInt(postId, 10)
-				post["tag"] = tagsBind[postID]
-			}
-			return postResult, nil
-		} else {
-			fmt.Println("error")
+			tagsBind[tagID] = tagDetail
 		}
+		postResult, _ := lists.([]map[string]interface{})
+		for _, post := range postResult {
+			postId := post["id"].(int64)
+			postID := strconv.FormatInt(postId, 10)
+			post["tag"] = tagsBind[postID]
+		}
+		return postResult, nil
 	}
 	return lists, nil
 }
