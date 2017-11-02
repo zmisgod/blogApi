@@ -40,7 +40,7 @@ func GetArticleLists(page, pagesize int) (interface{}, error) {
 	}
 	data, ok := lists.([]map[string]interface{})
 	if ok {
-		var ids []int64
+		ids := make([]int64, 0)
 		for _, value := range data {
 			v, ok := value["id"].(int64)
 			if ok {
@@ -55,17 +55,28 @@ func GetArticleLists(page, pagesize int) (interface{}, error) {
 		finalTag := string(tagRune[1:])
 		tags, err := ArticleTagsLists(finalTag)
 		if err == nil {
-			mTags, ok := tags.([]map[string]interface{})
-			if ok {
-				// var tagsBind map[int64]interface{}
-				for _, vs := range mTags {
-					fmt.Println(vs["ID"])
-					// tagsBind[vs["ID"]] = vs
+			mTags, _ := tags.([]map[string]interface{})
+			tagsBind := make(map[string]interface{}, 0)
+			for _, vs := range ids {
+				var tagDetail []interface{}
+				tagID := strconv.FormatInt(vs, 10)
+				for _, de := range mTags {
+					tagDID, _ := de["id"].(string)
+					if tagID == tagDID && len(de) != 0 {
+						tagDetail = append(tagDetail, de)
+					}
 				}
-				// fmt.Println(tagsBind)
-			} else {
-				fmt.Println("error")
+				tagsBind[tagID] = tagDetail
 			}
+			postResult, _ := lists.([]map[string]interface{})
+			for _, post := range postResult {
+				postId := post["id"].(int64)
+				postID := strconv.FormatInt(postId, 10)
+				post["tag"] = tagsBind[postID]
+			}
+			return postResult, nil
+		} else {
+			fmt.Println("error")
 		}
 	}
 	return lists, nil
@@ -91,7 +102,7 @@ func ArticleTags(articleId int) (interface{}, error) {
 }
 
 func ArticleTagsLists(articleIds string) (interface{}, error) {
-	sqlSte := fmt.Sprintf("select tm.name as category_name,t.term_taxonomy_id as category_id,p.ID from wps_posts as p left join wps_term_relationships as rs on rs.object_id = p.ID left join wps_term_taxonomy as t on t.term_taxonomy_id = rs.term_taxonomy_id left join wps_terms as tm on tm.`term_id` = t.term_id where p.ID in (%s) and t.taxonomy ='%s'", articleIds, "post_tag")
+	sqlSte := fmt.Sprintf("select tm.name as category_name,t.term_taxonomy_id as category_id,p.ID as id from wps_posts as p left join wps_term_relationships as rs on rs.object_id = p.ID left join wps_term_taxonomy as t on t.term_taxonomy_id = rs.term_taxonomy_id left join wps_terms as tm on tm.`term_id` = t.term_id where p.ID in (%s) and t.taxonomy ='%s'", articleIds, "post_tag")
 	rows, _ := dbConn.Query(sqlSte)
 	return DBQueryRows(rows)
 }
