@@ -3,6 +3,7 @@ package models
 import (
 	"fmt"
 	"strconv"
+	"strings"
 )
 
 func ArticleAll(page, pagesize int) (interface{}, error) {
@@ -41,6 +42,8 @@ func GetArticleLists(page, pagesize int) (interface{}, error) {
 	data, _ := lists.([]map[string]interface{})
 	ids := make([]int64, 0)
 	for _, value := range data {
+		temDate := value["post_date"].(string)
+		value["post_date"] = OnlyShowYMD(temDate)
 		v, ok := value["id"].(int64)
 		if ok {
 			ids = append(ids, v)
@@ -101,4 +104,9 @@ func ArticleTagsLists(articleIds string) (interface{}, error) {
 	sqlSte := fmt.Sprintf("select tm.name as category_name,t.term_taxonomy_id as category_id,p.ID as id from wps_posts as p left join wps_term_relationships as rs on rs.object_id = p.ID left join wps_term_taxonomy as t on t.term_taxonomy_id = rs.term_taxonomy_id left join wps_terms as tm on tm.`term_id` = t.term_id where p.ID in (%s) and t.taxonomy ='%s'", articleIds, "post_tag")
 	rows, _ := dbConn.Query(sqlSte)
 	return DBQueryRows(rows)
+}
+
+func OnlyShowYMD(date string) string {
+	res := strings.Split(date, " ")
+	return res[0]
 }
