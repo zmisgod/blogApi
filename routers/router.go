@@ -24,9 +24,14 @@ func init() {
 	}))
 	beego.Router("/", &controllers.StaticController{}, "get:Static")
 	ns := beego.NewNamespace("/v1",
-		beego.NSNamespace("/object",
+		beego.NSNamespace("/tag",
 			beego.NSInclude(
-				&controllers.ObjectController{},
+				&controllers.TagController{},
+			),
+		),
+		beego.NSNamespace("/category",
+			beego.NSInclude(
+				&controllers.CategoryController{},
 			),
 		),
 		beego.NSNamespace("/home",
