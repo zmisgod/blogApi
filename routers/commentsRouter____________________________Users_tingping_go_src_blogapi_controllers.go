@@ -7,6 +7,14 @@ import (
 
 func init() {
 
+	beego.GlobalControllerRouter["blogapi/controllers:CategoryController"] = append(beego.GlobalControllerRouter["blogapi/controllers:CategoryController"],
+		beego.ControllerComments{
+			Method: "Get",
+			Router: `/:categoryId`,
+			AllowHTTPMethods: []string{"get"},
+			MethodParams: param.Make(),
+			Params: nil})
+
 	beego.GlobalControllerRouter["blogapi/controllers:HomeController"] = append(beego.GlobalControllerRouter["blogapi/controllers:HomeController"],
 		beego.ControllerComments{
 			Method: "GetAll",
@@ -23,43 +31,11 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["blogapi/controllers:ObjectController"] = append(beego.GlobalControllerRouter["blogapi/controllers:ObjectController"],
-		beego.ControllerComments{
-			Method: "Post",
-			Router: `/`,
-			AllowHTTPMethods: []string{"post"},
-			MethodParams: param.Make(),
-			Params: nil})
-
-	beego.GlobalControllerRouter["blogapi/controllers:ObjectController"] = append(beego.GlobalControllerRouter["blogapi/controllers:ObjectController"],
-		beego.ControllerComments{
-			Method: "GetAll",
-			Router: `/`,
-			AllowHTTPMethods: []string{"get"},
-			MethodParams: param.Make(),
-			Params: nil})
-
-	beego.GlobalControllerRouter["blogapi/controllers:ObjectController"] = append(beego.GlobalControllerRouter["blogapi/controllers:ObjectController"],
+	beego.GlobalControllerRouter["blogapi/controllers:TagController"] = append(beego.GlobalControllerRouter["blogapi/controllers:TagController"],
 		beego.ControllerComments{
 			Method: "Get",
-			Router: `/:objectId`,
+			Router: `/:tagId`,
 			AllowHTTPMethods: []string{"get"},
-			MethodParams: param.Make(),
-			Params: nil})
-
-	beego.GlobalControllerRouter["blogapi/controllers:ObjectController"] = append(beego.GlobalControllerRouter["blogapi/controllers:ObjectController"],
-		beego.ControllerComments{
-			Method: "Put",
-			Router: `/:objectId`,
-			AllowHTTPMethods: []string{"put"},
-			MethodParams: param.Make(),
-			Params: nil})
-
-	beego.GlobalControllerRouter["blogapi/controllers:ObjectController"] = append(beego.GlobalControllerRouter["blogapi/controllers:ObjectController"],
-		beego.ControllerComments{
-			Method: "Delete",
-			Router: `/:objectId`,
-			AllowHTTPMethods: []string{"delete"},
 			MethodParams: param.Make(),
 			Params: nil})
 
