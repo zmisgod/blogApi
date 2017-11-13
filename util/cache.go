@@ -10,14 +10,14 @@ type keyValue struct {
 	value interface{}
 }
 
-type StarCache struct {
+type MyCache struct {
 	maxSize  int
 	lock     sync.Mutex
 	itemMap  map[string]*list.Element
 	itemList *list.List
 }
 
-func (cache *StarCache) Get(key string) interface{} {
+func (cache *MyCache) Get(key string) interface{} {
 	elem, ok := cache.itemMap[key]
 	if !ok {
 		return nil
