@@ -22,7 +22,7 @@ func (t *TagController) Get() {
 	if page, err = t.GetInt("page"); err != nil || page < 1 {
 		page = 1
 	}
-	pageSize := 15
+	pageSize := 12
 	res, err := models.TagAll(tagID, page, pageSize, "post_tag")
 	t.CheckError(err)
 	t.SendJSON(200, res, "successful")
