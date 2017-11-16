@@ -6,14 +6,19 @@ import (
 )
 
 func SphinxSearch(keyword string, page, pageSize int) (interface{}, error) {
-	SphinxClient := sphinx.NewClient().SetServer(beego.AppConfig.String("SphinxHost"), 0).SetConnectTimeout(5000)
+	sphinxOptions := &sphinx.Options{
+		Host:      beego.AppConfig.String("SphinxHost"),
+		Timeout:   5000,
+		Limit:     pageSize,
+		MatchMode: sphinx.SPH_MATCH_ANY,
+	}
+	SphinxClient := sphinx.NewClient(sphinxOptions)
 	if err := SphinxClient.Error(); err != nil {
 		return nil, err
 	}
 	defer SphinxClient.Close()
 
-	SphinxClient = SphinxClient.SetMatchMode(2)
-	SphinxClient = SphinxClient.SetLimits((page-1)*pageSize, pageSize, 10000000, 0)
+	SphinxClient.SetLimits((page-1)*pageSize, pageSize, 10000000, 0)
 	// 查询，第一个参数是我们要查询的关键字，第二个是索引名称test1，第三个是备注
 	res, err := SphinxClient.Query(keyword, "main", "search article!")
 	if err != nil {
