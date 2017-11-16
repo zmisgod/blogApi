@@ -41,6 +41,9 @@ func Init() {
 	if err := SphinxClient.Error(); err != nil {
 		panic(err)
 	}
+	if err := SphinxClient.Open(); err != nil {
+		panic(err)
+	}
 }
 
 func CheckError(err error) error {
