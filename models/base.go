@@ -7,11 +7,13 @@ import (
 
 	"github.com/astaxie/beego"
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/yunge/sphinx"
 )
 
 var (
-	dbConn *sql.DB
-	err    error
+	dbConn       *sql.DB
+	err          error
+	SphinxClient *sphinx.Client
 )
 
 func Init() {
@@ -33,6 +35,18 @@ func Init() {
 	//用于设置闲置的连接数。
 	dbConn.SetMaxIdleConns(1000)
 	dbConn.Ping()
+
+	//sphinx
+	opts := &sphinx.Options{
+		Host:      "localhost",
+		Timeout:   5000,
+		Limit:     12,
+		MatchMode: sphinx.SPH_MATCH_ANY,
+	}
+	SphinxClient := sphinx.NewClient(opts)
+	if err := SphinxClient.Error(); err != nil {
+		panic(err)
+	}
 }
 
 func CheckError(err error) error {
