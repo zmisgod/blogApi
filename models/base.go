@@ -41,6 +41,9 @@ func Init() {
 	if err := SphinxClient.Error(); err != nil {
 		panic(err)
 	}
+	SphinxClient.SetMatchMode(sphinx.SPH_MATCH_ANY)
+	fields := map[string]int{"post_intro": 3, "post_content": 2, "post_title": 1, "post_author": 4}
+	SphinxClient.SetFieldWeights(fields)
 	if err := SphinxClient.Open(); err != nil {
 		panic(err)
 	}
