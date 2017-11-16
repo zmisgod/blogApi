@@ -1,13 +1,12 @@
 package models
 
 import (
-	"github.com/astaxie/beego"
 	"github.com/yunge/sphinx"
 )
 
 func SphinxSearch(keyword string, page, pageSize int) (interface{}, error) {
 	sphinxOptions := &sphinx.Options{
-		Host:      beego.AppConfig.String("SphinxHost"),
+		Host:      "localhost",
 		Timeout:   5000,
 		Limit:     pageSize,
 		MatchMode: sphinx.SPH_MATCH_ANY,
