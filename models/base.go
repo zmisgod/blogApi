@@ -37,7 +37,7 @@ func Init() {
 	dbConn.Ping()
 
 	//sphinx
-	SphinxClient = sphinx.NewClient().SetServer("localhost", 0).SetConnectTimeout(5000)
+	SphinxClient = sphinx.NewClient().SetServer("localhost", 0).SetConnectTimeout(5000).SetMatchMode(sphinx.SPH_MATCH_ANY)
 	if err := SphinxClient.Error(); err != nil {
 		panic(err)
 	}
