@@ -8,8 +8,13 @@ func SphinxSearch(keyword string, page, pageSize int) (interface{}, error) {
 		return nil, err
 	}
 	var articleMap []interface{}
+
 	for _, match := range res.Matches {
-		articleMap = append(articleMap, match)
+		var tempData map[string]interface{}
+		tempData["id"] = match.DocId
+		tempData["post_title"] = match.AttrValues[0]
+		tempData["post_intro"] = match.AttrValues[3]
+		articleMap = append(articleMap, tempData)
 	}
 	return articleMap, nil
 }
