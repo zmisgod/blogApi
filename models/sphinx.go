@@ -10,7 +10,7 @@ func SphinxSearch(keyword string, page, pageSize int) (interface{}, error) {
 	var articleMap []interface{}
 
 	for _, match := range res.Matches {
-		var tempData map[string]interface{}
+		tempData := make(map[string]interface{})
 		tempData["id"] = match.DocId
 		tempData["post_title"] = match.AttrValues[0]
 		tempData["post_intro"] = match.AttrValues[3]
