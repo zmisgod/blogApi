@@ -16,8 +16,14 @@ func SphinxSearch(keyword string, page, pageSize int) (interface{}, error) {
 	for _, match := range res.Matches {
 		tempData := make(map[string]interface{})
 		tempData["id"] = match.DocId
-		tempData["post_title"] = strings.Replace(match.AttrValues[0], keyword, "<b style='color:red'>"+keyword+"</b>")
-		tempData["post_intro"] = strings.Replace(match.AttrValues[3], keyword, "<b style='color:red'>"+keyword+"</b>")
+		title, ok := match.AttrValues[0].(string)
+		if ok {
+			tempData["post_title"] = strings.Replace(title, keyword, "<b style='color:red'>"+keyword+"</b>", -1)
+		}
+		intro, ok := match.AttrValues[3].(string)
+		if ok {
+			tempData["post_intro"] = strings.Replace(intro, keyword, "<b style='color:red'>"+keyword+"</b>", -1)
+		}
 		articleMap = append(articleMap, tempData)
 	}
 	return articleMap, nil
