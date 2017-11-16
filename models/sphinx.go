@@ -5,6 +5,9 @@ import (
 )
 
 func SphinxSearch(keyword string, page, pageSize int) (interface{}, error) {
+	if err := SphinxClient.Error(); err != nil {
+		SphinxClient = SphinxConnect()
+	}
 	SphinxClient.SetLimits((page-1)*pageSize, pageSize, 1000, 0)
 	// 查询，第一个参数是我们要查询的关键字，第二个是索引名称test1，第三个是备注
 	res, err := SphinxClient.Query(keyword, "main", "search article!")
