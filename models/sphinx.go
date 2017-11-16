@@ -1,5 +1,9 @@
 package models
 
+import (
+	"strings"
+)
+
 func SphinxSearch(keyword string, page, pageSize int) (interface{}, error) {
 	SphinxClient.SetLimits((page-1)*pageSize, pageSize, 1000, 0)
 	// 查询，第一个参数是我们要查询的关键字，第二个是索引名称test1，第三个是备注
@@ -12,8 +16,8 @@ func SphinxSearch(keyword string, page, pageSize int) (interface{}, error) {
 	for _, match := range res.Matches {
 		tempData := make(map[string]interface{})
 		tempData["id"] = match.DocId
-		tempData["post_title"] = match.AttrValues[0]
-		tempData["post_intro"] = match.AttrValues[3]
+		tempData["post_title"] = strings.Replace(match.AttrValues[0], keyword, "<b style='color:red'>"+keyword+"</b>")
+		tempData["post_intro"] = strings.Replace(match.AttrValues[3], keyword, "<b style='color:red'>"+keyword+"</b>")
 		articleMap = append(articleMap, tempData)
 	}
 	return articleMap, nil
