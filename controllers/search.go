@@ -1,8 +1,6 @@
 package controllers
 
 import "blogapi/models"
-import "strconv"
-import "fmt"
 
 type SearchController struct {
 	BaseController
@@ -15,14 +13,13 @@ func (t *SearchController) Get() {
 		pageSize int
 		keyword  string
 	)
-	fmt.Println("_+_+_+")
-	if keyword = t.Ctx.Input.Param(":keyword"); keyword == "" {
+	if keyword = t.GetString("keyword"); keyword == "" {
 		t.SendJSON(403, "", "empty search keyword")
 	}
-	if page, err := strconv.Atoi(t.Ctx.Input.Param(":page")); err != nil || page < 1 {
+	if page, err := t.GetInt("page"); err != nil || page < 1 {
 		page = 1
 	}
-	if pageSize, err := strconv.Atoi(t.Ctx.Input.Param(":pageSize")); err != nil || pageSize < 1 {
+	if pageSize, err := t.GetInt("pageSize"); err != nil || pageSize < 1 {
 		pageSize = 15
 	}
 	res, err := models.SphinxSearch(keyword, page, pageSize)
