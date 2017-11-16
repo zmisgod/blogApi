@@ -31,6 +31,14 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
+	beego.GlobalControllerRouter["blogapi/controllers:SearchController"] = append(beego.GlobalControllerRouter["blogapi/controllers:SearchController"],
+		beego.ControllerComments{
+			Method: "Get",
+			Router: `/`,
+			AllowHTTPMethods: []string{"get"},
+			MethodParams: param.Make(),
+			Params: nil})
+
 	beego.GlobalControllerRouter["blogapi/controllers:TagController"] = append(beego.GlobalControllerRouter["blogapi/controllers:TagController"],
 		beego.ControllerComments{
 			Method: "Get",
