@@ -35,18 +35,22 @@ func Init() {
 	//用于设置闲置的连接数。
 	dbConn.SetMaxIdleConns(1000)
 	dbConn.Ping()
+	SphinxClient = SphinxConnect()
+}
 
+func SphinxConnect() *sphinx.Client {
 	//sphinx
-	SphinxClient = sphinx.NewClient().SetServer("localhost", 0).SetConnectTimeout(0)
-	if err := SphinxClient.Error(); err != nil {
+	sphinxClient := sphinx.NewClient().SetServer("localhost", 0).SetConnectTimeout(1000)
+	if err := sphinxClient.Error(); err != nil {
 		panic(err)
 	}
-	SphinxClient.SetMatchMode(sphinx.SPH_MATCH_ANY)
+	sphinxClient.SetMatchMode(sphinx.SPH_MATCH_ANY)
 	fields := map[string]int{"post_intro": 3, "post_content": 2, "post_title": 1, "post_author": 4}
-	SphinxClient.SetFieldWeights(fields)
-	if err := SphinxClient.Open(); err != nil {
-		panic(err)
+	sphinxClient.SetFieldWeights(fields)
+	if err := sphinxClient.Open(); err != nil {
+		SphinxConnect()
 	}
+	return sphinxClient
 }
 
 func CheckError(err error) error {
