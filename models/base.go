@@ -43,7 +43,7 @@ func Init() {
 		Limit:     12,
 		MatchMode: sphinx.SPH_MATCH_ANY,
 	}
-	SphinxClient := sphinx.NewClient(opts)
+	SphinxClient = sphinx.NewClient(opts)
 	if err := SphinxClient.Error(); err != nil {
 		panic(err)
 	}
