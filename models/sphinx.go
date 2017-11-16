@@ -5,13 +5,13 @@ import (
 )
 
 func SphinxSearch(keyword string, page, pageSize int) (interface{}, error) {
-	sphinxOptions := &sphinx.Options{
+	opts := &sphinx.Options{
 		Host:      "localhost",
 		Timeout:   5000,
 		Limit:     pageSize,
 		MatchMode: sphinx.SPH_MATCH_ANY,
 	}
-	SphinxClient := sphinx.NewClient(sphinxOptions)
+	SphinxClient := sphinx.NewClient(opts)
 	if err := SphinxClient.Error(); err != nil {
 		return nil, err
 	}
