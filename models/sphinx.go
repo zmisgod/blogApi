@@ -18,11 +18,13 @@ func SphinxSearch(keyword string, page, pageSize int) (interface{}, error) {
 		tempData["id"] = match.DocId
 		title, ok := match.AttrValues[0].(string)
 		if ok {
-			tempData["post_title"] = strings.Replace(title, keyword, "<b style='color:red'>"+keyword+"</b>", -1)
+			postTitle := strings.Replace(title, strings.ToUpper(keyword), "<b style='color:red'>"+strings.ToUpper(keyword)+"</b>", -1)
+			tempData["post_title"] = strings.Replace(postTitle, strings.ToLower(keyword), "<b style='color:red'>"+strings.ToLower(keyword)+"</b>", -1)
 		}
 		intro, ok := match.AttrValues[3].(string)
 		if ok {
-			tempData["post_intro"] = strings.Replace(intro, keyword, "<b style='color:red'>"+keyword+"</b>", -1)
+			postIntro := strings.Replace(intro, strings.ToUpper(keyword), "<b style='color:red'>"+strings.ToUpper(keyword)+"</b>", -1)
+			tempData["post_intro"] = strings.Replace(postIntro, strings.ToLower(keyword), "<b style='color:red'>"+strings.ToLower(keyword)+"</b>", -1)
 		}
 		articleMap = append(articleMap, tempData)
 	}
