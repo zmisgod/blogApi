@@ -35,7 +35,6 @@ func Init() {
 	//用于设置闲置的连接数。
 	dbConn.SetMaxIdleConns(1000)
 	dbConn.Ping()
-	SphinxClient = SphinxConnect()
 }
 
 func SphinxConnect() *sphinx.Client {
