@@ -2,6 +2,7 @@ package models
 
 import (
 	"fmt"
+	"reflect"
 	"strings"
 	"time"
 )
@@ -29,7 +30,7 @@ func SphinxSearch(keyword string, page, pageSize int) (interface{}, error) {
 			postIntro := strings.Replace(intro, strings.ToUpper(keyword), "<b style='color:red'>"+strings.ToUpper(keyword)+"</b>", -1)
 			tempData["post_title"] = strings.Replace(postIntro, strings.ToLower(keyword), "<b style='color:red'>"+strings.ToLower(keyword)+"</b>", -1)
 		}
-		fmt.Println(match.AttrValues[2])
+		fmt.Println(reflect.TypeOf(match.AttrValues[2]))
 		postAt, ok := match.AttrValues[2].(int64)
 		if ok {
 			fmt.Println(postAt)
