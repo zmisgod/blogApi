@@ -2,6 +2,7 @@ package models
 
 import (
 	"strings"
+	"time"
 )
 
 func SphinxSearch(keyword string, page, pageSize int) (interface{}, error) {
@@ -26,6 +27,11 @@ func SphinxSearch(keyword string, page, pageSize int) (interface{}, error) {
 		if ok {
 			postIntro := strings.Replace(intro, strings.ToUpper(keyword), "<b style='color:red'>"+strings.ToUpper(keyword)+"</b>", -1)
 			tempData["post_title"] = strings.Replace(postIntro, strings.ToLower(keyword), "<b style='color:red'>"+strings.ToLower(keyword)+"</b>", -1)
+		}
+		postAt, ok := match.AttrValues[2].(int64)
+		if ok {
+			postDate := strings.Split(time.Unix(postAt, 0).Format("2006-01-02"), " ")
+			tempData["post_date"] = postDate[0]
 		}
 		articleMap = append(articleMap, tempData)
 	}

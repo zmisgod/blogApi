@@ -20,7 +20,7 @@ func (t *SearchController) Get() {
 	if page, err = t.GetInt("page"); err != nil || page < 1 {
 		page = 1
 	}
-	pageSize = 15
+	pageSize = 12
 	res, err := models.SphinxSearch(keyword, page, pageSize)
 	if err != nil {
 		t.SendJSON(400, "", "ok")
