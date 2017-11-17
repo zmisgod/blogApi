@@ -1,6 +1,7 @@
 package models
 
 import (
+	"fmt"
 	"strings"
 	"time"
 )
@@ -16,6 +17,7 @@ func SphinxSearch(keyword string, page, pageSize int) (interface{}, error) {
 	var articleMap []interface{}
 
 	for _, match := range res.Matches {
+		fmt.Println(match)
 		tempData := make(map[string]interface{})
 		tempData["id"] = match.DocId
 		title, ok := match.AttrValues[0].(string)
@@ -30,7 +32,9 @@ func SphinxSearch(keyword string, page, pageSize int) (interface{}, error) {
 		}
 		postAt, ok := match.AttrValues[2].(int64)
 		if ok {
+			fmt.Println(postAt)
 			postDate := strings.Split(time.Unix(postAt, 0).Format("2006-01-02"), " ")
+			fmt.Println(postDate)
 			tempData["post_date"] = postDate[0]
 		}
 		articleMap = append(articleMap, tempData)
