@@ -20,12 +20,12 @@ func SphinxSearch(keyword string, page, pageSize int) (interface{}, error) {
 		title, ok := match.AttrValues[0].(string)
 		if ok {
 			postTitle := strings.Replace(title, strings.ToUpper(keyword), "<b style='color:red'>"+strings.ToUpper(keyword)+"</b>", -1)
-			tempData["post_title"] = strings.Replace(postTitle, strings.ToLower(keyword), "<b style='color:red'>"+strings.ToLower(keyword)+"</b>", -1)
+			tempData["post_intro"] = strings.Replace(postTitle, strings.ToLower(keyword), "<b style='color:red'>"+strings.ToLower(keyword)+"</b>", -1)
 		}
 		intro, ok := match.AttrValues[3].(string)
 		if ok {
 			postIntro := strings.Replace(intro, strings.ToUpper(keyword), "<b style='color:red'>"+strings.ToUpper(keyword)+"</b>", -1)
-			tempData["post_intro"] = strings.Replace(postIntro, strings.ToLower(keyword), "<b style='color:red'>"+strings.ToLower(keyword)+"</b>", -1)
+			tempData["post_title"] = strings.Replace(postIntro, strings.ToLower(keyword), "<b style='color:red'>"+strings.ToLower(keyword)+"</b>", -1)
 		}
 		articleMap = append(articleMap, tempData)
 	}
