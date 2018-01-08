@@ -13,6 +13,17 @@ type BaseController struct {
 	actionName     string
 	options        map[string]string
 	cache          *util.MyCache
+	pageSize       int
+	page           int
+}
+
+func (this *BaseController) Prepare() {
+	this.pageSize = 12
+	if page, err := this.GetInt("page"); err != nil || page < 1 {
+		this.page = 1
+	} else {
+		this.page = page
+	}
 }
 
 func (this *BaseController) SendJSON(code int, data interface{}, msg string) {

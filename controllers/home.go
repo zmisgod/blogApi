@@ -17,14 +17,9 @@ type HomeController struct {
 // @router / [get]
 func (h *HomeController) GetAll() {
 	var (
-		err  error
-		page int
+		err error
 	)
-	if page, err = h.GetInt("page"); err != nil || page < 1 {
-		page = 1
-	}
-	pagesize := 12
-	resultss, err := models.GetArticleLists(page, pagesize)
+	resultss, err := models.GetArticleLists(h.page, h.pageSize)
 	h.CheckError(err)
 	h.SendJSON(200, resultss, "successful")
 }

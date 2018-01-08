@@ -12,18 +12,13 @@ type TagController struct {
 //@router /:tagId [get]
 func (t *TagController) Get() {
 	var (
-		page  int
 		err   error
 		tagID int
 	)
 	if tagID, err = strconv.Atoi(t.Ctx.Input.Param(":tagId")); err != nil {
 		t.SendJSON(404, "", "invalid params")
 	}
-	if page, err = t.GetInt("page"); err != nil || page < 1 {
-		page = 1
-	}
-	pageSize := 12
-	res, err := models.TagAll(tagID, page, pageSize, "post_tag")
+	res, err := models.TagAll(tagID, t.page, t.pageSize, "post_tag")
 	t.CheckError(err)
 	t.SendJSON(200, res, "successful")
 }

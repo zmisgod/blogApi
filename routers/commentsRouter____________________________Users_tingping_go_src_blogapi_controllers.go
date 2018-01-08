@@ -15,6 +15,22 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
+	beego.GlobalControllerRouter["blogapi/controllers:CommentController"] = append(beego.GlobalControllerRouter["blogapi/controllers:CommentController"],
+		beego.ControllerComments{
+			Method: "Get",
+			Router: `/:articleId`,
+			AllowHTTPMethods: []string{"get"},
+			MethodParams: param.Make(),
+			Params: nil})
+
+	beego.GlobalControllerRouter["blogapi/controllers:CommentController"] = append(beego.GlobalControllerRouter["blogapi/controllers:CommentController"],
+		beego.ControllerComments{
+			Method: "Post",
+			Router: `/comment`,
+			AllowHTTPMethods: []string{"post"},
+			MethodParams: param.Make(),
+			Params: nil})
+
 	beego.GlobalControllerRouter["blogapi/controllers:HomeController"] = append(beego.GlobalControllerRouter["blogapi/controllers:HomeController"],
 		beego.ControllerComments{
 			Method: "GetAll",
