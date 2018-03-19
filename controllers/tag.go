@@ -1,8 +1,9 @@
 package controllers
 
 import (
-	"blogapi/models"
 	"strconv"
+
+	"github.com/zmisgod/blogApi/models"
 )
 
 type TagController struct {

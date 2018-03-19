@@ -1,7 +1,7 @@
 package controllers
 
 import (
-	"blogapi/util"
+	"github.com/zmisgod/blogApi/util"
 
 	"github.com/astaxie/beego"
 )

@@ -1,8 +1,8 @@
 package main
 
 import (
-	"blogapi/models"
-	_ "blogapi/routers"
+	"github.com/zmisgod/blogApi/models"
+	_ "github.com/zmisgod/blogApi/routers"
 
 	"github.com/astaxie/beego"
 )

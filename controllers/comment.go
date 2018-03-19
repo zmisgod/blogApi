@@ -1,10 +1,11 @@
 package controllers
 
 import (
-	"blogapi/models"
 	"fmt"
 	"strconv"
 	"strings"
+
+	"github.com/zmisgod/blogApi/models"
 )
 
 type CommentController struct {

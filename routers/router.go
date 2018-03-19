@@ -8,7 +8,7 @@
 package routers
 
 import (
-	"blogapi/controllers"
+	"github.com/zmisgod/blogApi/controllers"
 
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/plugins/cors"
