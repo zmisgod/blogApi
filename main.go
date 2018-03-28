@@ -23,7 +23,7 @@ func main() {
 			AllowHeaders:     []string{"Origin", "Authorization", "Access-Control-Allow-Origin"},
 			ExposeHeaders:    []string{"Content-Length", "Access-Control-Allow-Origin"},
 			AllowCredentials: false,
-			AllowOrigins:     []string{"https://*.zmis.me"},
+			AllowOrigins:     []string{"https://*.zmis.me", "http://*.zmis.me", "https://zmis.me"},
 		}))
 	}
 	beego.Run()
