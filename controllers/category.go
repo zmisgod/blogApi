@@ -1,10 +1,12 @@
 package controllers
 
 import (
-	"blogapi/models"
 	"strconv"
+
+	"github.com/zmisgod/blogApi/models"
 )
 
+//CategoryController 分类的控制器
 type CategoryController struct {
 	BaseController
 }

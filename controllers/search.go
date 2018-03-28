@@ -1,6 +1,6 @@
 package controllers
 
-import "blogapi/models"
+import "github.com/zmisgod/blogApi/models"
 
 type SearchController struct {
 	BaseController

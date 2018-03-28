@@ -1,11 +1,12 @@
 package controllers
 
 import (
-	"blogapi/util"
+	"github.com/zmisgod/blogApi/util"
 
 	"github.com/astaxie/beego"
 )
 
+//BaseController 基础的控制器
 type BaseController struct {
 	beego.Controller
 	moduleName     string
@@ -15,28 +16,35 @@ type BaseController struct {
 	cache          *util.MyCache
 	pageSize       int
 	page           int
+	token          string
+	userID         int
+	userName       string
+	imgURL         string
 }
 
-func (this *BaseController) Prepare() {
-	this.pageSize = 12
-	if page, err := this.GetInt("page"); err != nil || page < 1 {
-		this.page = 1
+//Prepare 准备数据
+func (base *BaseController) Prepare() {
+	base.pageSize = 12
+	if page, err := base.GetInt("page"); err != nil || page < 1 {
+		base.page = 1
 	} else {
-		this.page = page
+		base.page = page
 	}
 }
 
-func (this *BaseController) SendJSON(code int, data interface{}, msg string) {
+//SendJSON 返送json
+func (base *BaseController) SendJSON(code int, data interface{}, msg string) {
 	out := make(map[string]interface{})
 	out["code"] = code
 	out["data"] = data
 	out["msg"] = msg
-	this.Data["json"] = out
-	this.ServeJSON()
+	base.Data["json"] = out
+	base.ServeJSON()
 }
 
-func (this *BaseController) CheckError(err error) {
+//CheckError 检查错误
+func (base *BaseController) CheckError(err error) {
 	if err != nil {
-		this.SendJSON(400, "", err.Error())
+		base.SendJSON(400, "", err.Error())
 	}
 }
