@@ -25,6 +25,10 @@ func main() {
 			AllowCredentials: false,
 			AllowOrigins:     []string{"https://*.zmis.me", "http://*.zmis.me", "https://zmis.me"},
 		}))
+	} else {
+		beego.InsertFilter("*", beego.BeforeRouter, cors.Allow(&cors.Options{
+			AllowAllOrigins: true,
+		}))
 	}
 	beego.Run()
 }

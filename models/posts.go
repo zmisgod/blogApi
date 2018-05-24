@@ -197,3 +197,33 @@ func GetTagListPostIDs(tagID, page, pageSize int, articleType string) string {
 	searchFinnalID := string(searchID[1:])
 	return searchFinnalID
 }
+
+//GetRelatedPostByCategoryID 根据tagid获取post info
+func GetRelatedPostByCategoryID(tagID, page, pageSize int, articleType string) string {
+	//先获取tag对应的id的数据
+	sql := fmt.Sprintf("select p.ID as id, p.post_title from wps_posts as p left join wps_term_relationships as re on re.object_id = p.ID left join wps_term_taxonomy as ta on ta.term_taxonomy_id = re.term_taxonomy_id left join wps_users as u on p.post_author = u.ID where re.term_taxonomy_id = %d and p.post_status = 'publish' and p.post_type = 'post' and ta.taxonomy = '%s' order by p.ID desc limit %d offset %d", tagID, articleType, pageSize, (page-1)*pageSize)
+	tagIDRows, _ := dbConn.Query(sql)
+	tagRowLists, err := DBQueryRows(tagIDRows)
+	fmt.Println(tagRowLists)
+	if err != nil {
+		return ""
+	}
+	tagRowIDMap, _ := tagRowLists.([]map[string]interface{})
+	tagToPostID := make([]int64, 0)
+	for _, value := range tagRowIDMap {
+		temPostIDr, err := strconv.ParseInt(value["id"].(string), 10, 64)
+		if err == nil {
+			tagToPostID = append(tagToPostID, temPostIDr)
+		}
+	}
+	if len(tagToPostID) == 0 {
+		return ""
+	}
+	var postIDs string
+	for _, v := range tagToPostID {
+		postIDs += "," + strconv.FormatInt(v, 10)
+	}
+	searchID := []rune(postIDs)
+	searchFinnalID := string(searchID[1:])
+	return searchFinnalID
+}

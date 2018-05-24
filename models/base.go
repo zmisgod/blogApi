@@ -33,7 +33,7 @@ func Init() {
 	//用于设置最大打开的连接数，默认值为0表示不限制。
 	dbConn.SetMaxOpenConns(2000)
 	//用于设置闲置的连接数。
-	dbConn.SetMaxIdleConns(1000)
+	dbConn.SetMaxIdleConns(0)
 	dbConn.Ping()
 }
 
