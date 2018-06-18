@@ -7,6 +7,14 @@ import (
 
 func init() {
 
+	beego.GlobalControllerRouter["github.com/zmisgod/blogApi/controllers:ArticleController"] = append(beego.GlobalControllerRouter["github.com/zmisgod/blogApi/controllers:ArticleController"],
+		beego.ControllerComments{
+			Method: "Get",
+			Router: `/:articleId`,
+			AllowHTTPMethods: []string{"get"},
+			MethodParams: param.Make(),
+			Params: nil})
+
 	beego.GlobalControllerRouter["github.com/zmisgod/blogApi/controllers:CategoryController"] = append(beego.GlobalControllerRouter["github.com/zmisgod/blogApi/controllers:CategoryController"],
 		beego.ControllerComments{
 			Method: "Get",
@@ -33,16 +41,16 @@ func init() {
 
 	beego.GlobalControllerRouter["github.com/zmisgod/blogApi/controllers:HomeController"] = append(beego.GlobalControllerRouter["github.com/zmisgod/blogApi/controllers:HomeController"],
 		beego.ControllerComments{
-			Method: "GetAll",
+			Method: "Get",
 			Router: `/`,
 			AllowHTTPMethods: []string{"get"},
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["github.com/zmisgod/blogApi/controllers:HomeController"] = append(beego.GlobalControllerRouter["github.com/zmisgod/blogApi/controllers:HomeController"],
+	beego.GlobalControllerRouter["github.com/zmisgod/blogApi/controllers:LinkController"] = append(beego.GlobalControllerRouter["github.com/zmisgod/blogApi/controllers:LinkController"],
 		beego.ControllerComments{
 			Method: "Get",
-			Router: `/:articleId`,
+			Router: `/`,
 			AllowHTTPMethods: []string{"get"},
 			MethodParams: param.Make(),
 			Params: nil})

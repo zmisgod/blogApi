@@ -1,25 +1,21 @@
 package controllers
 
-import (
-	"strconv"
-
-	"github.com/zmisgod/blogApi/models"
-)
+import "github.com/zmisgod/blogApi/models"
 
 type TagController struct {
 	BaseController
 }
 
 //@router /:tagId [get]
-func (t *TagController) Get() {
+func (h *TagController) Get() {
 	var (
-		err   error
-		tagID int
+		err error
 	)
-	if tagID, err = strconv.Atoi(t.Ctx.Input.Param(":tagId")); err != nil {
-		t.SendJSON(404, "", "invalid params")
+	tagID, err := h.GetInt(":tagId")
+	if err != nil {
+		h.CheckError(err)
 	}
-	res, err := models.TagAll(tagID, t.page, t.pageSize, "post_tag")
-	t.CheckError(err)
-	t.SendJSON(200, res, "successful")
+	lists, err := models.GetArticleListsByTagID(tagID, h.page, h.pageSize)
+	h.CheckError(err)
+	h.SendJSON(200, lists, "successful")
 }

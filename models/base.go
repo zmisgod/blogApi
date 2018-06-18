@@ -2,20 +2,22 @@ package models
 
 import (
 	"database/sql"
-	"errors"
 	"fmt"
 
 	"github.com/astaxie/beego"
+	// mysql connecter
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/yunge/sphinx"
 )
 
 var (
-	dbConn       *sql.DB
-	err          error
+	dbConn *sql.DB
+	err    error
+	// SphinxClient s
 	SphinxClient *sphinx.Client
 )
 
+//Init initinal start
 func Init() {
 	dbhost := beego.AppConfig.String("dbhost")
 	dbport := beego.AppConfig.String("dbport")
@@ -37,6 +39,7 @@ func Init() {
 	dbConn.Ping()
 }
 
+//SphinxConnect conection aboard
 func SphinxConnect() *sphinx.Client {
 	//sphinx
 	sphinxClient := sphinx.NewClient().SetServer("localhost", 0).SetConnectTimeout(1000)
@@ -52,6 +55,7 @@ func SphinxConnect() *sphinx.Client {
 	return sphinxClient
 }
 
+//CheckError check error
 func CheckError(err error) error {
 	if err != nil {
 		fmt.Println(err.Error())
@@ -59,85 +63,7 @@ func CheckError(err error) error {
 	return nil
 }
 
+//TableName get db table name
 func TableName(str string) string {
 	return beego.AppConfig.String("dbprefix") + str
-}
-
-func DBQueryRow(rows *sql.Rows) (interface{}, error) {
-	columns, err := rows.Columns()
-	if err != nil {
-		return "", err
-	}
-	count := len(columns)
-	//定义输出的类型
-	result := make(map[string]interface{})
-	//这个是sql查询出来的字段
-	values := make([]interface{}, count)
-	//保存sql查询出来的对应的地址
-	valuePtrs := make([]interface{}, count)
-	for rows.Next() {
-		for i := 0; i < count; i++ {
-			valuePtrs[i] = &values[i]
-		}
-		//scansql查询出来的字段的地址
-		rows.Scan(valuePtrs...)
-
-		//开始循环columns
-		for i, col := range columns {
-			var v interface{}
-			//值
-			val := values[i]
-			//判读值的类型（interface类型）如果是byte，则需要转换成字符串
-			b, ok := val.([]byte)
-			if ok {
-				v = string(b)
-			} else {
-				v = val
-			}
-			//保存
-			result[col] = v
-		}
-	}
-	_, ok := result["id"]
-	if !ok {
-		return "", errors.New("params invalid")
-	}
-	return result, nil
-}
-
-func DBQueryRows(rows *sql.Rows) (interface{}, error) {
-	if rows == nil {
-		return "", errors.New("empty data")
-	}
-	columns, err := rows.Columns()
-	if err != nil {
-		return "", err
-	}
-	count := len(columns)
-	tableData := make([]map[string]interface{}, 0)
-	values := make([]interface{}, count)
-	valuePtrs := make([]interface{}, count)
-	for rows.Next() {
-		for i := 0; i < count; i++ {
-			valuePtrs[i] = &values[i]
-		}
-		rows.Scan(valuePtrs...)
-		entry := make(map[string]interface{})
-		for i, col := range columns {
-			var v interface{}
-			val := values[i]
-			b, ok := val.([]byte)
-			if ok {
-				v = string(b)
-			} else {
-				v = val
-			}
-			entry[col] = v
-		}
-		tableData = append(tableData, entry)
-	}
-	if len(tableData) == 0 {
-		return "", errors.New("invalid params")
-	}
-	return tableData, nil
 }

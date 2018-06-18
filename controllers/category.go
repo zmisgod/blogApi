@@ -1,8 +1,6 @@
 package controllers
 
 import (
-	"strconv"
-
 	"github.com/zmisgod/blogApi/models"
 )
 
@@ -12,15 +10,15 @@ type CategoryController struct {
 }
 
 //@router /:categoryId [get]
-func (t *CategoryController) Get() {
+func (h *CategoryController) Get() {
 	var (
-		err        error
-		categoryID int
+		err error
 	)
-	if categoryID, err = strconv.Atoi(t.Ctx.Input.Param(":categoryId")); err != nil {
-		t.SendJSON(404, "", "invalid params")
+	cateID, err := h.GetInt(":categoryId")
+	if err != nil {
+		h.CheckError(err)
 	}
-	res, err := models.TagAll(categoryID, t.page, t.pageSize, "category")
-	t.CheckError(err)
-	t.SendJSON(200, res, "successful")
+	lists, err := models.GetArticleListsByCategoryID(cateID, h.page, h.pageSize)
+	h.CheckError(err)
+	h.SendJSON(200, lists, "successful")
 }

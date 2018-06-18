@@ -17,17 +17,15 @@ func (com *CommentController) Get() {
 	var (
 		err       error
 		articleID int
-		commentID int
 		orderby   string
 	)
 	if articleID, err = strconv.Atoi(com.Ctx.Input.Param(":articleId")); err != nil {
 		com.SendJSON(400, "", "invalid params")
 	}
-	commentID, err = com.GetInt("comment_id")
 
 	orderby = "comment_ID desc"
 
-	res, err := models.GetArticleCommentLists(articleID, com.page, com.pageSize, orderby, commentID)
+	res, err := models.GetArticleCommentLists(articleID, com.page, com.pageSize, orderby)
 	com.CheckError(err)
 	com.SendJSON(200, res, "ok")
 }

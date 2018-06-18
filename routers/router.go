@@ -21,6 +21,11 @@ func init() {
 				&controllers.TagController{},
 			),
 		),
+		beego.NSNamespace("/article",
+			beego.NSInclude(
+				&controllers.ArticleController{},
+			),
+		),
 		beego.NSNamespace("/category",
 			beego.NSInclude(
 				&controllers.CategoryController{},
@@ -39,6 +44,11 @@ func init() {
 		beego.NSNamespace("/comment",
 			beego.NSInclude(
 				&controllers.CommentController{},
+			),
+		),
+		beego.NSNamespace("/link",
+			beego.NSInclude(
+				&controllers.LinkController{},
 			),
 		),
 	)

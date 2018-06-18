@@ -1,36 +1,53 @@
 package models
 
-import "database/sql"
+import (
+	"database/sql"
+	"fmt"
+	"time"
+)
 
+// Comment wps_comments
 type Comment struct {
-	CommentAuthor  string `json:"comment_author"`
-	CommentDateGmt string `json:"comment_date_gmt"`
-	CommentContent string `json:"comment_content"`
-	CommentID      int    `json:"comment_ID"`
-	CommentKarma   int    `json:"comment_karma"`
+	ID          int    `json:"id"`
+	UserID      int    `json:"user_id"`
+	Content     string `json:"content"`
+	AuthorName  string `json:"author_name"`
+	AuthorEmail string `json:"author_email"`
+	AuthorURL   string `json:"author_url"`
+	createdAt   int
+	CreatedAt   string `json:"created_at"`
 }
 
-type CommentLists struct {
-	Comments []Comment
-}
-
-func GetArticleCommentLists(articleId, page, pageSize int, orderby string, commentId int) (interface{}, error) {
+//GetArticleCommentLists 获取文章评论列表
+func GetArticleCommentLists(postID, page, pageSize int, orderby string) ([]Comment, error) {
 	var (
 		rows *sql.Rows
 		err  error
 	)
+	// var commentList CommentLists
+	commentList := []Comment{}
 
-	rows, err = dbConn.Query(
-		"select comment_author , comment_date_gmt, comment_content, comment_ID,comment_karma from wps_comments where comment_post_ID  = ? and comment_parent= ? order by ? limit ? offset ?",
-		articleId,
-		commentId,
-		orderby,
-		pageSize,
-		(page-1)*pageSize,
-	)
-
+	rows, err = dbConn.Query(fmt.Sprintf("select created_at,author_email,author_name,author_url,content,id,user_id from wps_comments where post_id = %d order by created_at desc limit %d,%d", postID, page, pageSize))
 	if err != nil {
-		return "", err
+		return commentList, err
 	}
-	return DBQueryRows(rows)
+	for rows.Next() {
+		var aComment Comment
+		err = rows.Scan(
+			&aComment.createdAt,
+			&aComment.AuthorEmail,
+			&aComment.AuthorName,
+			&aComment.AuthorURL,
+			&aComment.Content,
+			&aComment.ID,
+			&aComment.UserID,
+		)
+		if err != nil {
+			continue
+		}
+		tm := time.Unix(int64(aComment.createdAt), 0)
+		aComment.CreatedAt = tm.Format("2006-01-02 03:04")
+		commentList = append(commentList, aComment)
+	}
+	return commentList, nil
 }
