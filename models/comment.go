@@ -28,7 +28,7 @@ func GetArticleCommentLists(postID, page, pageSize int, orderby string) ([]Comme
 	commentList := []Comment{}
 
 	offset := (page - 1) * pageSize
-	rows, err = dbConn.Query(fmt.Sprintf("select created_at,author_email,author_name,author_url,content,id,user_id from wps_comments where post_id = %d order by created_at desc limit %d,%d", postID, page, offset))
+	rows, err = dbConn.Query(fmt.Sprintf("select created_at,author_email,author_name,author_url,content,id,user_id from wps_comments where post_id = %d order by created_at desc limit %d,%d", postID, offset, pageSize))
 	if err != nil {
 		return commentList, err
 	}

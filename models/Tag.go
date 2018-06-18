@@ -49,7 +49,7 @@ func GetArticleListsByTagID(cateID, page, pageSize int) ([]PostList, error) {
 	// var postList Post
 	postList := []PostList{}
 	offset := (page - 1) * pageSize
-	rows, err = dbConn.Query(fmt.Sprintf("select p.id,p.post_title,u.name,c.c_name,p.post_title,p.post_intro,p.comment_status,p.comment_count from wps_post_tags as pt left join wps_posts as p on pt.post_id = p.id left join wps_users as u on p.user_id = u.id left join wps_post_categories as c on c.id = p.cat_id where p.post_status = 1 and pt.tag_id = %d order by p.created_at desc limit %d,%d", cateID, page, offset))
+	rows, err = dbConn.Query(fmt.Sprintf("select p.id,p.post_title,u.name,c.c_name,p.post_title,p.post_intro,p.comment_status,p.comment_count from wps_post_tags as pt left join wps_posts as p on pt.post_id = p.id left join wps_users as u on p.user_id = u.id left join wps_post_categories as c on c.id = p.cat_id where p.post_status = 1 and pt.tag_id = %d order by p.created_at desc limit %d,%d", cateID, offset, pageSize))
 	if err != nil {
 		return postList, err
 	}

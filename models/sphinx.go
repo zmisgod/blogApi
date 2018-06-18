@@ -5,6 +5,7 @@ import (
 	"time"
 )
 
+//SphinxSearch sphinx search
 func SphinxSearch(keyword string, page, pageSize int) (interface{}, error) {
 	SphinxClient = SphinxConnect()
 	SphinxClient.SetLimits((page-1)*pageSize, pageSize, 1000, 0)
