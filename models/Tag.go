@@ -21,7 +21,7 @@ func GetPostTagLists(postID int) ([]Tag, error) {
 	// var Post CommentLists
 	tagList := []Tag{}
 
-	rows, err = dbConn.Query(fmt.Sprintf("select t.tag_id,t.name as tag_name from wps_post_tags as pt left join wps_tags as t on pt.tag_id = t.tag_id where pt.post_id = %d", postID))
+	rows, err = dbConn.Query(fmt.Sprintf("select t.tag_id,t.name as tag_name from wps_post_tags as pt left join wps_tags as t on pt.tag_id = t.tag_id where pt.post_id = %d and pt.disabled = 0", postID))
 	if err != nil {
 		return tagList, err
 	}
