@@ -15,7 +15,8 @@ func GetArticleListsByCategoryID(cateID, page, pageSize int) ([]PostList, error)
 	// var postList PostList
 	postList := []PostList{}
 
-	rows, err = dbConn.Query(fmt.Sprintf("select p.id,p.post_title,u.name as user_name,c.c_name as category_name,p.post_title,p.post_intro,p.comment_count,p.created_at from wps_posts as p left join wps_users as u on p.user_id = u.id left join wps_post_categories as c on c.id = p.cat_id where p.post_status = 1 and p.cat_id = %d order by p.created_at desc limit %d,%d", cateID, page, pageSize))
+	offset := (page - 1) * pageSize
+	rows, err = dbConn.Query(fmt.Sprintf("select p.id,p.post_title,u.name as user_name,c.c_name as category_name,p.post_title,p.post_intro,p.comment_count,p.created_at from wps_posts as p left join wps_users as u on p.user_id = u.id left join wps_post_categories as c on c.id = p.cat_id where p.post_status = 1 and p.cat_id = %d order by p.created_at desc limit %d,%d", cateID, page, offset))
 	if err != nil {
 		return postList, err
 	}

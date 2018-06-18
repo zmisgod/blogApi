@@ -5,7 +5,7 @@ import (
 	"fmt"
 
 	"github.com/astaxie/beego"
-	// mysql connecter
+	//mysql connecter
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/yunge/sphinx"
 )
@@ -13,7 +13,7 @@ import (
 var (
 	dbConn *sql.DB
 	err    error
-	// SphinxClient s
+	//SphinxClient s
 	SphinxClient *sphinx.Client
 )
 
