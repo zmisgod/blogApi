@@ -1,9 +1,7 @@
 package controllers
 
 import (
-	"fmt"
 	"strconv"
-	"strings"
 
 	"github.com/zmisgod/blogApi/models"
 )
@@ -30,24 +28,43 @@ func (com *CommentController) Get() {
 	com.SendJSON(200, res, "ok")
 }
 
-//@router /comment [post]
+//@router /:articleId [post]
 func (com *CommentController) Post() {
 	var (
-		commentID      int
-		commentContent string = strings.TrimSpace(com.GetString("comment_content"))
-		articleID      int
-		err            error
+		content   string
+		err       error
+		articleID int
 	)
-	commentID, err = com.GetInt("comment_id")
+	if articleID, err = strconv.Atoi(com.Ctx.Input.Param(":articleId")); err != nil {
+		com.SendJSON(400, "", "invalid params")
+	}
+
+	commentID, err := com.GetInt("comment_id")
 	if err != nil {
 		com.SendJSON(400, "error", "invalid comment_id params")
 	}
-	articleID, err = com.GetInt("article_id")
-	if err != nil {
-		com.SendJSON(400, "error", "invalid article_id params")
+
+	content = com.GetString("conetnt")
+	if len(content) == 0 {
+		com.SendJSON(400, "", "empty content")
 	}
-	fmt.Println(commentID)
-	fmt.Println(commentContent)
-	fmt.Println(articleID)
-	com.SendJSON(200, "comment_id", "ok")
+
+	authorURL := com.GetString("auithor_url")
+
+	authorEmail := com.GetString("author_email")
+
+	authorName := com.GetString("author_name")
+	if authorName == "" {
+		com.SendJSON(400, "error", "empty authorName params")
+	}
+
+	authorAgent := com.Ctx.Input.Cookie("User-Agent")
+	if authorAgent == "" {
+		com.SendJSON(400, "error", "do not try to post anything")
+	}
+
+	authorIP := com.Ctx.Input.IP()
+
+	num := models.SaveArticleComment(articleID, commentID, authorName, authorEmail, authorURL, content, authorIP, authorAgent)
+	com.SendJSON(200, num, "ok")
 }

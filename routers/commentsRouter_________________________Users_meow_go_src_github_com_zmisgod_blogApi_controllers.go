@@ -34,7 +34,7 @@ func init() {
 	beego.GlobalControllerRouter["github.com/zmisgod/blogApi/controllers:CommentController"] = append(beego.GlobalControllerRouter["github.com/zmisgod/blogApi/controllers:CommentController"],
 		beego.ControllerComments{
 			Method: "Post",
-			Router: `/comment`,
+			Router: `/:articleId`,
 			AllowHTTPMethods: []string{"post"},
 			MethodParams: param.Make(),
 			Params: nil})

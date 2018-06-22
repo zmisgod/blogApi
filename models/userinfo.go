@@ -16,6 +16,13 @@ type User struct {
 	UserLink  []UserLink `json:"user_link"`
 }
 
+//userHeadImages 用户头像
+type userImages struct {
+	id      int
+	sex     int
+	HeadURL string `json:"head_url"`
+}
+
 //GetUserInfo 用户信息
 func GetUserInfo(userID int) (User, error) {
 	var (
@@ -47,4 +54,32 @@ func GetUserInfo(userID int) (User, error) {
 		break
 	}
 	return user, nil
+}
+
+//GetUserHeadImages 获取用户头像
+func GetUserHeadImages(userIDs string) (map[int]string, error) {
+	var (
+		rows *sql.Rows
+		err  error
+	)
+	// var Post CommentLists
+	userHeadImages := map[int]string{}
+	rows, err = dbConn.Query(fmt.Sprintf("select i.user_id,i.head_url,i.sex from  wps_users as u left join wps_users_info as i on u.id = i.user_id where u.id in (%s)", userIDs))
+	if err != nil {
+		return userHeadImages, err
+	}
+
+	for rows.Next() {
+		var user userImages
+		err = rows.Scan(
+			&user.id,
+			&user.HeadURL,
+			&user.sex,
+		)
+		if err != nil {
+			continue
+		}
+		userHeadImages[user.id] = user.HeadURL
+	}
+	return userHeadImages, nil
 }
