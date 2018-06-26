@@ -1,5 +1,7 @@
-
-test.svg
-
-test1.svg
 conf/app.conf
+.vscode/
+.idea/
+lastupdate.tmp
+main
+routers/*
+!routers/router.go

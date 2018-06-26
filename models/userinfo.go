@@ -3,6 +3,8 @@ package models
 import (
 	"database/sql"
 	"fmt"
+
+	"github.com/astaxie/beego"
 )
 
 //User 用户信息
@@ -49,6 +51,7 @@ func GetUserInfo(userID int) (User, error) {
 		if err != nil {
 			continue
 		}
+		user.HeadURL = beego.AppConfig.String("StaticPrefix") + user.HeadURL
 		userLink, _ := GetUserLink(user.id)
 		user.UserLink = userLink
 		break
