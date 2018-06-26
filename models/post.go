@@ -107,8 +107,6 @@ func GetArticleDetail(postID int) (PostDetail, error) {
 		post.Tags = tags
 
 		num, _ := GetArticleNumsByPost(post.ID)
-		fmt.Println(num)
-		fmt.Println(err)
 		post.NumInfo = num
 
 		userInfo, _ := GetUserInfo(post.UserID)
