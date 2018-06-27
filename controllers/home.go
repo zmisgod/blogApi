@@ -21,6 +21,7 @@ func (h *HomeController) Get() {
 	h.SendJSON(200, lists, "successful")
 }
 
+//GetAll 获取所有
 func (h *HomeController) GetAll() {
 	fmt.Println("error")
 }

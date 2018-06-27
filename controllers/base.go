@@ -1,7 +1,9 @@
 package controllers
 
 import (
-	"github.com/zmisgod/blogApi/util"
+	"strings"
+
+	"github.com/zmisgod/blogApi/models"
 
 	"github.com/astaxie/beego"
 )
@@ -9,17 +11,13 @@ import (
 //BaseController 基础的控制器
 type BaseController struct {
 	beego.Controller
-	moduleName     string
-	controllerName string
-	actionName     string
-	options        map[string]string
-	cache          *util.MyCache
-	pageSize       int
-	page           int
-	token          string
-	userID         int
-	userName       string
-	imgURL         string
+	pageSize   int
+	page       int
+	ip         string
+	userAgent  string
+	authority  string
+	requestURI string
+	refer      string
 }
 
 //Prepare 准备数据
@@ -29,6 +27,23 @@ func (base *BaseController) Prepare() {
 		base.page = 1
 	} else {
 		base.page = page
+	}
+	base.ip = base.Ctx.Input.IP()
+	base.userAgent = base.Ctx.Input.UserAgent()
+	base.authority = base.Ctx.Input.Header("authorization")
+	base.requestURI = base.Ctx.Input.URI()
+	base.refer = base.Ctx.Input.Refer()
+	c, _ := base.GetControllerAndAction()
+	controllerPrefix := strings.Replace(c, "Controller", "", 10)
+	//用户请求日志
+	models.SaveUserVisiteHistory(controllerPrefix, base.ip, base.userAgent, base.requestURI, base.refer)
+	//文章浏览记录
+	if controllerPrefix == "Article" {
+		postID, err := base.GetInt(":articleId")
+		if err != nil {
+			base.CheckError(err)
+		}
+		models.AutoSubPostView(postID)
 	}
 }
 

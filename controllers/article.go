@@ -18,6 +18,5 @@ func (h *ArticleController) Get() {
 	}
 	lists, err := models.GetArticleDetail(postID)
 	h.CheckError(err)
-	models.AutoSubPostView(postID)
 	h.SendJSON(200, lists, "successful")
 }
