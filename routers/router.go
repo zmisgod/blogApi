@@ -51,6 +51,11 @@ func init() {
 				&controllers.LinkController{},
 			),
 		),
+		beego.NSNamespace("/topics",
+			beego.NSInclude(
+				&controllers.TopicsController{},
+			),
+		),
 	)
 	beego.AddNamespace(ns)
 }
