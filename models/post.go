@@ -12,6 +12,7 @@ type Post struct {
 	UserID       int    `json:"user_id"`
 	UserName     string `json:"user_name"`
 	CategoryName string `json:"category_name"`
+	CategoryID   int    `json:"category_id"`
 	PostTitle    string `json:"post_title"`
 	PostIntro    string `json:"post_intro"`
 	CoverURL     string `json:"cover_url"`
@@ -80,7 +81,7 @@ func GetArticleDetail(postID int) (PostDetail, error) {
 		err  error
 	)
 	var post PostDetail
-	rows, err = dbConn.Query(fmt.Sprintf("select p.id,p.user_id, p.post_title,u.name as user_name,c.c_name as category_name,p.post_title,p.post_intro,p.created_at,pc.contents from wps_posts as p left join wps_users as u on p.user_id = u.id left join wps_post_categories as c on c.id = p.cat_id left join wps_post_contents as pc on pc.id = p.id where p.post_status = 1 and p.id  = %d", postID))
+	rows, err = dbConn.Query(fmt.Sprintf("select p.id,p.user_id, p.post_title,u.name as user_name,c.c_name as category_name,p.post_title,p.post_intro,p.created_at,pc.contents,p.cat_id from wps_posts as p left join wps_users as u on p.user_id = u.id left join wps_post_categories as c on c.id = p.cat_id left join wps_post_contents as pc on pc.id = p.id where p.post_status = 1 and p.id  = %d", postID))
 	if err != nil {
 		return post, err
 	}
@@ -96,6 +97,7 @@ func GetArticleDetail(postID int) (PostDetail, error) {
 			&post.PostIntro,
 			&post.createdAt,
 			&post.Contents,
+			&post.CategoryID,
 		)
 		if err != nil {
 			continue
