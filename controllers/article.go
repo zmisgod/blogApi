@@ -1,6 +1,8 @@
 package controllers
 
-import "github.com/zmisgod/blogApi/models"
+import (
+	"github.com/zmisgod/blogApi/models"
+)
 
 //ArticleController articlecontroller
 type ArticleController struct {

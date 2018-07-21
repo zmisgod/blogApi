@@ -35,8 +35,14 @@ func (base *BaseController) Prepare() {
 	base.refer = base.Ctx.Input.Refer()
 	c, _ := base.GetControllerAndAction()
 	controllerPrefix := strings.Replace(c, "Controller", "", 10)
-	//用户请求日志
-	models.SaveUserVisiteHistory(controllerPrefix, base.ip, base.userAgent, base.requestURI, base.refer)
+	devMode := beego.AppConfig.String("runmode")
+	if devMode != "dev" {
+		//用户请求日志
+		models.SaveUserVisiteHistory(controllerPrefix, base.ip, base.userAgent, base.requestURI, base.refer)
+		if base.refer == "" {
+			base.SendJSON(400, "", "my api do not for you")
+		}
+	}
 	//文章浏览记录
 	if controllerPrefix == "Article" {
 		postID, err := base.GetInt(":articleId")

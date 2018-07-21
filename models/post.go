@@ -2,6 +2,7 @@ package models
 
 import (
 	"database/sql"
+	"errors"
 	"fmt"
 	"time"
 )
@@ -86,6 +87,7 @@ func GetArticleDetail(postID int) (PostDetail, error) {
 		return post, err
 	}
 
+	i := 0
 	for rows.Next() {
 		err = rows.Scan(
 			&post.ID,
@@ -100,7 +102,7 @@ func GetArticleDetail(postID int) (PostDetail, error) {
 			&post.CategoryID,
 		)
 		if err != nil {
-			continue
+			return post, err
 		}
 		tm := time.Unix(int64(post.createdAt), 0)
 		post.CreatedAt = tm.Format("2006-01-02 03:04")
@@ -113,7 +115,11 @@ func GetArticleDetail(postID int) (PostDetail, error) {
 
 		userInfo, _ := GetUserInfo(post.UserID)
 		post.UserInfo = userInfo
+		i++
 		break
+	}
+	if i == 0 {
+		return post, errors.New("empty")
 	}
 	return post, nil
 }
