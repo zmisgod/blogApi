@@ -40,7 +40,7 @@ func (base *BaseController) Prepare() {
 		//用户请求日志
 		models.SaveUserVisiteHistory(controllerPrefix, base.ip, base.userAgent, base.requestURI, base.refer)
 		validIPs := beego.AppConfig.String("VaildIp")
-		validIPLists := strings.Split(",", validIPs)
+		validIPLists := strings.Split(validIPs, ",")
 		if base.refer == "" {
 			count := 0
 			for _, v := range validIPLists {
