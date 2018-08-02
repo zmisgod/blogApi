@@ -39,7 +39,8 @@ func (base *BaseController) Prepare() {
 	if devMode != "dev" {
 		//用户请求日志
 		models.SaveUserVisiteHistory(controllerPrefix, base.ip, base.userAgent, base.requestURI, base.refer)
-		if base.userAgent == "" {
+		validIP := beego.AppConfig.String("VaildIp")
+		if base.refer == "" && base.ip != validIP {
 			base.SendJSON(400, "", "my api do not for you")
 		}
 	}
