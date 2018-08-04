@@ -37,8 +37,7 @@ func (base *BaseController) Prepare() {
 	controllerPrefix := strings.Replace(c, "Controller", "", 10)
 	devMode := beego.AppConfig.String("runmode")
 	if devMode != "dev" {
-		//用户请求日志
-		models.SaveUserVisiteHistory(controllerPrefix, base.ip, base.userAgent, base.requestURI, base.refer)
+		saveLog := true
 		validIPs := beego.AppConfig.String("VaildIp")
 		validIPLists := strings.Split(validIPs, ",")
 		if base.refer == "" {
@@ -46,11 +45,16 @@ func (base *BaseController) Prepare() {
 			for _, v := range validIPLists {
 				if base.ip == v {
 					count++
+					saveLog = false
 				}
 			}
 			if count == 0 {
 				base.SendJSON(400, "", "my api do not for you")
 			}
+		}
+		if saveLog {
+			//用户请求日志
+			models.SaveUserVisiteHistory(controllerPrefix, base.ip, base.userAgent, base.requestURI, base.refer)
 		}
 	}
 	//文章浏览记录

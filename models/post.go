@@ -62,7 +62,7 @@ func GetArticleLists(page, pageSize int) ([]PostList, error) {
 			&aPost.createdAt,
 		)
 		tm := time.Unix(int64(aPost.createdAt), 0)
-		aPost.CreatedAt = tm.Format("2006-01-02 03:04")
+		aPost.CreatedAt = tm.Format("2006-01-02 15:04")
 
 		tags, _ := GetPostTagLists(aPost.ID)
 		aPost.Tags = tags
@@ -105,7 +105,7 @@ func GetArticleDetail(postID int) (PostDetail, error) {
 			return post, err
 		}
 		tm := time.Unix(int64(post.createdAt), 0)
-		post.CreatedAt = tm.Format("2006-01-02 03:04")
+		post.CreatedAt = tm.Format("2006-01-02 15:04")
 
 		tags, _ := GetPostTagLists(post.ID)
 		post.Tags = tags

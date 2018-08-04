@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"encoding/json"
 	"strconv"
 
 	"github.com/zmisgod/blogApi/models"
@@ -28,6 +29,15 @@ func (com *CommentController) Get() {
 	com.SendJSON(200, res, "ok")
 }
 
+//CommentStruct 保存评论的数据结构
+type CommentStruct struct {
+	CommentID   int    `json:"comment_id"`
+	Content     string `json:"content"`
+	AuthorURL   string `json:"author_url"`
+	AuthorEmail string `json:"author_email"`
+	AuthorName  string `json:"author_name"`
+}
+
 //@router /:articleId [post]
 func (com *CommentController) Post() {
 	var (
@@ -39,32 +49,26 @@ func (com *CommentController) Post() {
 		com.SendJSON(400, "", "invalid params")
 	}
 
-	commentID, err := com.GetInt("comment_id")
-	if err != nil {
-		com.SendJSON(400, "error", "invalid comment_id params")
+	var commentRequest CommentStruct
+	json.Unmarshal(com.Ctx.Input.RequestBody, &commentRequest)
+
+	content = commentRequest.Content
+	if len(content) < 15 {
+		com.SendJSON(400, "error", "评论至少15字")
 	}
 
-	content = com.GetString("conetnt")
-	if len(content) == 0 {
-		com.SendJSON(400, "", "empty content")
-	}
-
-	authorURL := com.GetString("auithor_url")
-
-	authorEmail := com.GetString("author_email")
-
-	authorName := com.GetString("author_name")
+	authorName := commentRequest.AuthorName
 	if authorName == "" {
 		com.SendJSON(400, "error", "empty authorName params")
 	}
 
-	authorAgent := com.Ctx.Input.Cookie("User-Agent")
+	authorAgent := com.userAgent
 	if authorAgent == "" {
 		com.SendJSON(400, "error", "do not try to post anything")
 	}
 
 	authorIP := com.Ctx.Input.IP()
 
-	num := models.SaveArticleComment(articleID, commentID, authorName, authorEmail, authorURL, content, authorIP, authorAgent)
+	num := models.SaveArticleComment(articleID, commentRequest.CommentID, authorName, commentRequest.AuthorEmail, commentRequest.AuthorURL, content, authorIP, authorAgent)
 	com.SendJSON(200, num, "ok")
 }

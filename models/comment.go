@@ -52,7 +52,7 @@ func getArticleCommentLists(postID, page, pageSize int, orderby string) ([]Comme
 			continue
 		}
 		tm := time.Unix(int64(aComment.createdAt), 0)
-		aComment.CreatedAt = tm.Format("2006-01-02 03:04")
+		aComment.CreatedAt = tm.Format("2006-01-02 15:04")
 		commentList = append(commentList, aComment)
 	}
 	return commentList, nil
@@ -90,8 +90,8 @@ func GetArticleCommentLists(postID, page, pageSize int, orderby string) ([]Comme
 //SaveArticleComment 保存评论
 func SaveArticleComment(postID, commentID int, authorName, authorEmail, authorURL, content, authorIP, authorAgent string) Comment {
 	//检查评论是否超过240字符
-	if len(content) > 240 {
-		contentTmp := []rune(content)
+	contentTmp := []rune(content)
+	if len(contentTmp) > 240 {
 		content = string(contentTmp[:240])
 	}
 
@@ -107,12 +107,14 @@ func SaveArticleComment(postID, commentID int, authorName, authorEmail, authorUR
 		if err == nil {
 			lastID, err := result.LastInsertId()
 			if err == nil {
+				//评论 + 1
+				addArticleCommentNumber(postID)
 				aComment.ID = int(lastID)
 				aComment.AuthorImage = ""
 				aComment.AuthorName = authorName
 				aComment.AuthorURL = authorURL
 				aComment.Content = content
-				aComment.CreatedAt = commentTimeStamp.Format("2006-01-02 03:04")
+				aComment.CreatedAt = commentTimeStamp.Format("2006-01-02 15:04")
 			} else {
 				fmt.Println(err)
 			}
@@ -123,4 +125,17 @@ func SaveArticleComment(postID, commentID int, authorName, authorEmail, authorUR
 		fmt.Println(err)
 	}
 	return aComment
+}
+
+//addArticleCommentNumber 评论 + 1
+func addArticleCommentNumber(articleID int) {
+	stmt, err := dbConn.Prepare("update wps_post_nums set comment_num = comment_num + 1 where post_id = ?")
+	if err == nil {
+		_, err = stmt.Exec(articleID)
+		if err != nil {
+			fmt.Println(err)
+		}
+	} else {
+		fmt.Println(err)
+	}
 }
