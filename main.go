@@ -19,7 +19,7 @@ func main() {
 	if beego.BConfig.RunMode != "dev" {
 		beego.InsertFilter("*", beego.BeforeRouter, cors.Allow(&cors.Options{
 			AllowMethods:     []string{"*"},
-			AllowHeaders:     []string{"Origin", "Authorization", "Access-Control-Allow-Origin"},
+			AllowHeaders:     []string{"Origin", "Authorization", "Access-Control-Allow-Origin", "Content-Type"},
 			ExposeHeaders:    []string{"Content-Length", "Access-Control-Allow-Origin"},
 			AllowCredentials: false,
 			AllowOrigins:     []string{"https://*.zmis.me", "http://*.zmis.me", "https://zmis.me"},
