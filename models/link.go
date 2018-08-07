@@ -24,6 +24,7 @@ func GetLinks() ([]Link, error) {
 	linkList := []Link{}
 
 	rows, err = dbConn.Query(fmt.Sprintf("select link_url,link_name,link_image,link_description from wps_links where start_time <= %d and end_time >= %d and link_status = 1", time.Now().Unix(), time.Now().Unix()))
+	defer rows.Close()
 	if err != nil {
 		return linkList, err
 	}

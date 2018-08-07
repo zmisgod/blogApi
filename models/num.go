@@ -24,6 +24,7 @@ func GetArticleNumsByPost(postID int) (Num, error) {
 	postNum := Num{}
 
 	rows, err = dbConn.Query(fmt.Sprintf("select post_id,view_num, like_num, dislike_num, comment_num from wps_post_nums where post_id = %d", postID))
+	defer rows.Close()
 	if err != nil {
 		return postNum, err
 	}

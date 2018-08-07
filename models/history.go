@@ -23,6 +23,7 @@ func SaveUserVisiteHistory(vType, vIP, vUserAgent, requestURI, refer string) int
 		err error
 	)
 	stmt, err := dbConn.Prepare("insert into wps_history (type,user_agent,ip,uri,refer,visite_time) values (?,?,?,?,?,?)")
+	defer stmt.Close()
 	if err == nil {
 		result, err := stmt.Exec(vType, vUserAgent, vIP, requestURI, refer, time.Now().Unix())
 		if err == nil {

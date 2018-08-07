@@ -46,6 +46,7 @@ func GetArticleLists(page, pageSize int) ([]PostList, error) {
 	postList := []PostList{}
 	offset := (page - 1) * pageSize
 	rows, err = dbConn.Query(fmt.Sprintf("select p.id,p.user_id, p.post_title,u.name as user_name,c.c_name as category_name,p.post_title,p.post_intro,p.created_at from wps_posts as p left join wps_users as u on p.user_id = u.id left join wps_post_categories as c on c.id = p.cat_id where p.post_status = 1 order by p.created_at desc limit %d,%d", offset, pageSize))
+	defer rows.Close()
 	if err != nil {
 		return postList, err
 	}
@@ -84,6 +85,7 @@ func GetArticleDetail(postID int) (PostDetail, error) {
 	)
 	var post PostDetail
 	rows, err = dbConn.Query(fmt.Sprintf("select p.comment_status,p.id,p.user_id, p.post_title,u.name as user_name,c.c_name as category_name,p.post_title,p.post_intro,p.created_at,pc.contents,p.cat_id from wps_posts as p left join wps_users as u on p.user_id = u.id left join wps_post_categories as c on c.id = p.cat_id left join wps_post_contents as pc on pc.id = p.id where p.post_status = 1 and p.id  = %d", postID))
+	defer rows.Close()
 	if err != nil {
 		return post, err
 	}
@@ -134,6 +136,7 @@ func AutoSubPostView(postID int) int64 {
 	)
 	affectRow = 0
 	stmt, err := dbConn.Prepare(`update wps_post_nums set view_num = view_num + 1 where post_id = ?`)
+	defer stmt.Close()
 	if err == nil {
 		res, err := stmt.Exec(postID)
 		if err == nil {

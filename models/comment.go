@@ -35,6 +35,7 @@ func getArticleCommentLists(postID, page, pageSize int, orderby string) ([]Comme
 
 	offset := (page - 1) * pageSize
 	rows, err = dbConn.Query(fmt.Sprintf("select created_at,author_name,author_url,content,id,user_id from wps_post_comments where post_id = %d order by created_at desc limit %d,%d", postID, offset, pageSize))
+	defer rows.Close()
 	if err != nil {
 		return commentList, err
 	}
@@ -102,6 +103,7 @@ func SaveArticleComment(postID, commentID int, authorName, authorEmail, authorUR
 	var aComment Comment
 	commentTimeStamp := time.Now()
 	stmt, err := dbConn.Prepare("insert into wps_post_comments (post_id, user_id, content, author_name, author_email, author_url, author_ip, comment_agent, comment_parent, created_at) values (?,?,?,?,?,?,?,?,?,?)")
+	defer stmt.Close()
 	if err == nil {
 		result, err := stmt.Exec(postID, 0, content, authorName, authorEmail, authorURL, authorIP, authorAgent, commentID, commentTimeStamp.Unix())
 		if err == nil {
@@ -130,6 +132,7 @@ func SaveArticleComment(postID, commentID int, authorName, authorEmail, authorUR
 //addArticleCommentNumber 评论 + 1
 func addArticleCommentNumber(articleID int) {
 	stmt, err := dbConn.Prepare("update wps_post_nums set comment_num = comment_num + 1 where post_id = ?")
+	defer stmt.Close()
 	if err == nil {
 		_, err = stmt.Exec(articleID)
 		if err != nil {

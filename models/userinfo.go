@@ -35,6 +35,7 @@ func GetUserInfo(userID int) (User, error) {
 	user := User{}
 
 	rows, err = dbConn.Query(fmt.Sprintf("select i.user_id,i.nickname, i.head_url,i.birthday,i.introduce,i.sex from  wps_users as u left join wps_users_info as i on u.id = i.user_id where u.id = %d", userID))
+	defer rows.Close()
 	if err != nil {
 		return user, err
 	}
@@ -68,6 +69,7 @@ func GetUserHeadImages(userIDs string) (map[int]string, error) {
 	// var Post CommentLists
 	userHeadImages := map[int]string{}
 	rows, err = dbConn.Query(fmt.Sprintf("select i.user_id,i.head_url,i.sex from  wps_users as u left join wps_users_info as i on u.id = i.user_id where u.id in (%s)", userIDs))
+	defer rows.Close()
 	if err != nil {
 		return userHeadImages, err
 	}

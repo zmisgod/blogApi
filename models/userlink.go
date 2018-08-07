@@ -21,6 +21,7 @@ func GetUserLink(userID int) ([]UserLink, error) {
 	userLink := []UserLink{}
 
 	rows, err = dbConn.Query(fmt.Sprintf("select l.link_type,l.suffix from  wps_users as u left join wps_users_link as l on u.id = l.user_id where u.id = %d", userID))
+	defer rows.Close()
 	if err != nil {
 		return userLink, err
 	}

@@ -29,6 +29,7 @@ func GetTopicsArticleLists(topicsID, page, pageSize int) ([]PostList, error) {
 	var postList []PostList
 	offset := (page - 1) * pageSize
 	rows, err = dbConn.Query(fmt.Sprintf("select p.id,p.user_id,p.post_title,u.name   as user_name,c.c_name as category_name,p.post_title,p.post_intro,p.created_at from wps_special_topic as st left join wps_special_topic_lists as stl on st.id = stl.top_id left join wps_posts as p on p.id = stl.post_id left join wps_users as u on p.user_id = u.id left join wps_post_categories as c on c.id = p.cat_id where st.id = %d and p.post_status = 1 and st.disabled = 0 and stl.disabled = 0 order by stl.sort asc limit %d, %d", topicsID, offset, pageSize))
+	defer rows.Close()
 	if err != nil {
 		return postList, err
 	}
@@ -71,6 +72,7 @@ func GetTopicLists(page, pageSize int) ([]Topics, error) {
 	topicsList := []Topics{}
 	offset := (page - 1) * pageSize
 	rows, err = dbConn.Query(fmt.Sprintf("select id,title,img_url,content,created_at from wps_special_topic order by sort asc limit %d,%d", offset, pageSize))
+	defer rows.Close()
 	if err != nil {
 		return topicsList, err
 	}
