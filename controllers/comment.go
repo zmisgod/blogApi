@@ -19,14 +19,14 @@ func (com *CommentController) Get() {
 		orderby   string
 	)
 	if articleID, err = strconv.Atoi(com.Ctx.Input.Param(":articleId")); err != nil {
-		com.SendJSON(400, "", "invalid params")
+		com.SendError("invalid params")
 	}
 
 	orderby = "comment_ID desc"
 
 	res, err := models.GetArticleCommentLists(articleID, com.page, com.pageSize, orderby)
 	com.CheckError(err)
-	com.SendJSON(200, res, "ok")
+	com.SendData(res, "ok")
 }
 
 //CommentStruct 保存评论的数据结构
@@ -46,7 +46,7 @@ func (com *CommentController) Post() {
 		articleID int
 	)
 	if articleID, err = strconv.Atoi(com.Ctx.Input.Param(":articleId")); err != nil {
-		com.SendJSON(400, "", "invalid params")
+		com.SendError("invalid params")
 	}
 
 	var commentRequest CommentStruct
@@ -54,21 +54,21 @@ func (com *CommentController) Post() {
 
 	content = commentRequest.Content
 	if len(content) < 15 {
-		com.SendJSON(400, "error", "评论至少15字")
+		com.SendError("评论至少15字")
 	}
 
 	authorName := commentRequest.AuthorName
 	if authorName == "" {
-		com.SendJSON(400, "error", "empty authorName params")
+		com.SendError("empty authorName params")
 	}
 
 	authorAgent := com.userAgent
 	if authorAgent == "" {
-		com.SendJSON(400, "error", "do not try to post anything")
+		com.SendError("do not try to post anything")
 	}
 
 	authorIP := com.Ctx.Input.IP()
 
 	num := models.SaveArticleComment(articleID, commentRequest.CommentID, authorName, commentRequest.AuthorEmail, commentRequest.AuthorURL, content, authorIP, authorAgent)
-	com.SendJSON(200, num, "ok")
+	com.SendData(num, "ok")
 }

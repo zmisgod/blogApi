@@ -10,10 +10,7 @@ type LinkController struct {
 
 //@router / [get]
 func (h *LinkController) Get() {
-	var (
-		err error
-	)
 	lists, err := models.GetLinks()
 	h.CheckError(err)
-	h.SendJSON(200, lists, "successful")
+	h.SendData(lists, "successful")
 }

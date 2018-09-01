@@ -1,8 +1,6 @@
 package controllers
 
 import (
-	"fmt"
-
 	"github.com/zmisgod/blogApi/models"
 )
 
@@ -18,10 +16,5 @@ func (h *HomeController) Get() {
 	)
 	lists, err := models.GetArticleLists(h.page, h.pageSize)
 	h.CheckError(err)
-	h.SendJSON(200, lists, "successful")
-}
-
-//GetAll 获取所有
-func (h *HomeController) GetAll() {
-	fmt.Println("error")
+	h.SendData(lists, "successful")
 }

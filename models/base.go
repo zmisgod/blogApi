@@ -5,20 +5,27 @@ import (
 	"fmt"
 
 	"github.com/astaxie/beego"
+	"github.com/go-redis/redis"
 	//mysql connecter
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/yunge/sphinx"
 )
 
 var (
-	dbConn *sql.DB
-	err    error
-	//SphinxClient s
-	SphinxClient *sphinx.Client
+	dbConn       *sql.DB
+	sphinxClient *sphinx.Client
+	redisClient  *redis.Client
+
+	err error
 )
 
 //Init initinal start
 func Init() {
+	mysqlConnect()
+}
+
+//mysqlConnect mysql客户端
+func mysqlConnect() {
 	dbhost := beego.AppConfig.String("dbhost")
 	dbport := beego.AppConfig.String("dbport")
 	dbuser := beego.AppConfig.String("dbuser")
@@ -36,12 +43,27 @@ func Init() {
 	dbConn.SetMaxOpenConns(2000)
 	//用于设置闲置的连接数。
 	dbConn.SetMaxIdleConns(0)
-	dbConn.Ping()
+}
+
+//RedisConnect redis客户端
+func redisConnect() {
+	redisHost := beego.AppConfig.String("redishost")
+	redisport := beego.AppConfig.String("redisport")
+	redisPassword := beego.AppConfig.String("redispassword")
+	redisDB, err := beego.AppConfig.Int("redisdb")
+	if err != nil {
+		redisDB = 0
+	}
+
+	redisClient = redis.NewClient(&redis.Options{
+		Addr:     redisHost + ":" + redisport,
+		Password: redisPassword,
+		DB:       redisDB,
+	})
 }
 
 //SphinxConnect conection aboard
-func SphinxConnect() *sphinx.Client {
-	//sphinx
+func sphinxConnect() {
 	sphinxClient := sphinx.NewClient().SetServer("localhost", 0).SetConnectTimeout(1000)
 	if err := sphinxClient.Error(); err != nil {
 		panic(err)
@@ -49,10 +71,6 @@ func SphinxConnect() *sphinx.Client {
 	sphinxClient.SetMatchMode(sphinx.SPH_MATCH_ANY)
 	fields := map[string]int{"post_intro": 3, "post_content": 2, "post_title": 1, "post_author": 4}
 	sphinxClient.SetFieldWeights(fields)
-	if err := sphinxClient.Open(); err != nil {
-		SphinxConnect()
-	}
-	return sphinxClient
 }
 
 //CheckError check error

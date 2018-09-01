@@ -28,7 +28,7 @@ type Post struct {
 //PostDetail 文章详情
 type PostDetail struct {
 	Post
-	UserInfo User `json:"user_info"`
+	UserInfo UserInfo `json:"user_info"`
 }
 
 //PostList 文章列表
@@ -79,20 +79,10 @@ func GetArticleLists(page, pageSize int) ([]PostList, error) {
 
 //GetArticleDetail 获取文章详情
 func GetArticleDetail(postID int) (PostDetail, error) {
-	var (
-		rows *sql.Rows
-		err  error
-	)
 	var post PostDetail
-	rows, err = dbConn.Query(fmt.Sprintf("select p.comment_status,p.id,p.user_id, p.post_title,u.name as user_name,c.c_name as category_name,p.post_title,p.post_intro,p.created_at,pc.contents,p.cat_id from wps_posts as p left join wps_users as u on p.user_id = u.id left join wps_post_categories as c on c.id = p.cat_id left join wps_post_contents as pc on pc.id = p.id where p.post_status = 1 and p.id  = %d", postID))
-	defer rows.Close()
-	if err != nil {
-		return post, err
-	}
-
-	i := 0
-	for rows.Next() {
-		err = rows.Scan(
+	err := dbConn.QueryRow(
+		fmt.Sprintf("select p.comment_status,p.id,p.user_id, p.post_title,u.name as user_name,c.c_name as category_name,p.post_title,p.post_intro,p.created_at,pc.contents,p.cat_id from wps_posts as p left join wps_users as u on p.user_id = u.id left join wps_post_categories as c on c.id = p.cat_id left join wps_post_contents as pc on pc.id = p.id where p.post_status = 1 and p.id  = %d", postID)).
+		Scan(
 			&post.CommentStatus,
 			&post.ID,
 			&post.UserID,
@@ -105,26 +95,20 @@ func GetArticleDetail(postID int) (PostDetail, error) {
 			&post.Contents,
 			&post.CategoryID,
 		)
-		if err != nil {
-			return post, err
-		}
-		tm := time.Unix(int64(post.createdAt), 0)
-		post.CreatedAt = tm.Format("2006-01-02 15:04")
-
-		tags, _ := GetPostTagLists(post.ID)
-		post.Tags = tags
-
-		num, _ := GetArticleNumsByPost(post.ID)
-		post.NumInfo = num
-
-		userInfo, _ := GetUserInfo(post.UserID)
-		post.UserInfo = userInfo
-		i++
-		break
-	}
-	if i == 0 {
+	if err != nil {
 		return post, errors.New("empty")
 	}
+	tm := time.Unix(int64(post.createdAt), 0)
+	post.CreatedAt = tm.Format("2006-01-02 15:04")
+
+	tags, _ := GetPostTagLists(post.ID)
+	post.Tags = tags
+
+	num, _ := GetArticleNumsByPost(post.ID)
+	post.NumInfo = num
+
+	userInfo, _ := GetUserInfo(post.UserID)
+	post.UserInfo = userInfo
 	return post, nil
 }
 

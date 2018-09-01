@@ -1,2 +1,2 @@
 main: main.go
-	go build -o main main.go && nohup ./main &
+	rm ./main && go build -o main main.go && nohup ./main &

@@ -1,7 +1,6 @@
 package models
 
 import (
-	"database/sql"
 	"fmt"
 )
 
@@ -16,29 +15,11 @@ type Num struct {
 
 //GetArticleNumsByPost 获取文章的数量详情
 func GetArticleNumsByPost(postID int) (Num, error) {
-	var (
-		rows *sql.Rows
-		err  error
-	)
-	// var commentList CommentLists
-	postNum := Num{}
-
-	rows, err = dbConn.Query(fmt.Sprintf("select post_id,view_num, like_num, dislike_num, comment_num from wps_post_nums where post_id = %d", postID))
-	defer rows.Close()
+	var postNum Num
+	err := dbConn.QueryRow(
+		fmt.Sprintf("select post_id,view_num, like_num, dislike_num, comment_num from wps_post_nums where post_id = %d", postID)).Scan(&postNum.postID, &postNum.ViewNum, &postNum.LikeNum, &postNum.DislikeNum, &postNum.CommentNum)
 	if err != nil {
 		return postNum, err
-	}
-	for rows.Next() {
-		err = rows.Scan(
-			&postNum.postID,
-			&postNum.ViewNum,
-			&postNum.LikeNum,
-			&postNum.DislikeNum,
-			&postNum.CommentNum,
-		)
-		if err != nil {
-			return postNum, err
-		}
 	}
 	return postNum, nil
 }

@@ -2,19 +2,21 @@ package models
 
 import (
 	"database/sql"
+	"errors"
 	"fmt"
+	"time"
 
 	"github.com/astaxie/beego"
 )
 
-//User 用户信息
-type User struct {
+//UserInfo 用户信息
+type UserInfo struct {
 	id        int
 	NickName  string     `json:"nickname"`
 	Sex       int        `json:"sex"`
 	HeadURL   string     `json:"head_url"`
 	Introduce string     `json:"introduce"`
-	Birthday  string     `json:"birthday"`
+	Birthday  time.Time  `json:"birthday"`
 	UserLink  []UserLink `json:"user_link"`
 }
 
@@ -26,37 +28,22 @@ type userImages struct {
 }
 
 //GetUserInfo 用户信息
-func GetUserInfo(userID int) (User, error) {
-	var (
-		rows *sql.Rows
-		err  error
-	)
-	// var Post CommentLists
-	user := User{}
-
-	rows, err = dbConn.Query(fmt.Sprintf("select i.user_id,i.nickname, i.head_url,i.birthday,i.introduce,i.sex from  wps_users as u left join wps_users_info as i on u.id = i.user_id where u.id = %d", userID))
-	defer rows.Close()
-	if err != nil {
-		return user, err
-	}
-
-	for rows.Next() {
-		err = rows.Scan(
-			&user.id,
+func GetUserInfo(userID int) (UserInfo, error) {
+	user := UserInfo{}
+	err := dbConn.QueryRow(fmt.Sprintf("select i.user_id,i.nickname, i.head_url,i.birthday,i.introduce,i.sex from  wps_users as u left join wps_users_info as i on u.id = i.user_id where u.id = %d", userID)).
+		Scan(&user.id,
 			&user.NickName,
 			&user.HeadURL,
 			&user.Birthday,
 			&user.Introduce,
 			&user.Sex,
 		)
-		if err != nil {
-			continue
-		}
-		user.HeadURL = beego.AppConfig.String("StaticPrefix") + user.HeadURL
-		userLink, _ := GetUserLink(user.id)
-		user.UserLink = userLink
-		break
+	if err != nil {
+		return user, errors.New("未找到此人")
 	}
+	user.HeadURL = beego.AppConfig.String("StaticPrefix") + user.HeadURL
+	userLink, _ := GetUserLink(user.id)
+	user.UserLink = userLink
 	return user, nil
 }
 
@@ -66,7 +53,6 @@ func GetUserHeadImages(userIDs string) (map[int]string, error) {
 		rows *sql.Rows
 		err  error
 	)
-	// var Post CommentLists
 	userHeadImages := map[int]string{}
 	rows, err = dbConn.Query(fmt.Sprintf("select i.user_id,i.head_url,i.sex from  wps_users as u left join wps_users_info as i on u.id = i.user_id where u.id in (%s)", userIDs))
 	defer rows.Close()
@@ -84,7 +70,33 @@ func GetUserHeadImages(userIDs string) (map[int]string, error) {
 		if err != nil {
 			continue
 		}
-		userHeadImages[user.id] = user.HeadURL
+		userHeadImages[user.id] = beego.AppConfig.String("StaticPrefix") + user.HeadURL
 	}
 	return userHeadImages, nil
+}
+
+//UpdateUserInfo 修改user_info
+func UpdateUserInfo(nickname, headURL, introduce, birthday string, sex int, userID int64) (bool, error) {
+	var id int
+	err := dbConn.QueryRow(fmt.Sprintf("select id from wps_users_info where user_id = %d", userID)).Scan(&id)
+	if err != nil {
+		stmt, err := dbConn.Prepare("insert into wps_users_info (user_id, nickname, sex, head_url, introduce, birthday) values (?,?,?,?,?,?)")
+		if err != nil {
+			return false, err
+		}
+		_, err = stmt.Exec(id, nickname, sex, headURL, introduce, birthday)
+		if err != nil {
+			return false, err
+		}
+		return true, nil
+	}
+	stmt, err := dbConn.Prepare("update wps_users_info set nickname = ? , sex = ?, head_url = ?, introduce = ?, birthday = ? where user_id = ?")
+	if err != nil {
+		return false, err
+	}
+	_, err = stmt.Exec(nickname, sex, headURL, introduce, birthday, userID)
+	if err != nil {
+		return false, err
+	}
+	return true, nil
 }

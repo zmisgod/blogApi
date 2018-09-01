@@ -17,5 +17,5 @@ func (h *TagController) Get() {
 	}
 	lists, err := models.GetArticleListsByTagID(tagID, h.page, h.pageSize)
 	h.CheckError(err)
-	h.SendJSON(200, lists, "successful")
+	h.SendData(lists, "successful")
 }

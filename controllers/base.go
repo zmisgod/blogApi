@@ -30,7 +30,13 @@ func (base *BaseController) Prepare() {
 	}
 	base.ip = base.Ctx.Input.IP()
 	base.userAgent = base.Ctx.Input.UserAgent()
-	base.authority = base.Ctx.Input.Header("authorization")
+	base.authority = base.Ctx.Input.Header("Authorization")
+	if base.authority != "" {
+		checkAuth := models.CheckUserAuth(base.authority)
+		if !checkAuth {
+			base.SendAuthRequire("请登录")
+		}
+	}
 	base.requestURI = base.Ctx.Input.URI()
 	base.refer = base.Ctx.Input.Refer()
 	c, _ := base.GetControllerAndAction()
@@ -49,7 +55,7 @@ func (base *BaseController) Prepare() {
 				}
 			}
 			if count == 0 {
-				base.SendJSON(400, "", "my api do not for you")
+				base.SendError("my api do not for you")
 			}
 		}
 		if saveLog {
@@ -67,8 +73,13 @@ func (base *BaseController) Prepare() {
 	}
 }
 
-//SendJSON 返送json
-func (base *BaseController) SendJSON(code int, data interface{}, msg string) {
+//SendData 发送成功数据
+func (base *BaseController) SendData(data interface{}, msg string) {
+	base.sendJSON(200, data, msg)
+}
+
+//sendJSON 返送json
+func (base *BaseController) sendJSON(code int, data interface{}, msg string) {
 	out := make(map[string]interface{})
 	out["code"] = code
 	out["data"] = data
@@ -80,6 +91,21 @@ func (base *BaseController) SendJSON(code int, data interface{}, msg string) {
 //CheckError 检查错误
 func (base *BaseController) CheckError(err error) {
 	if err != nil {
-		base.SendJSON(400, "", err.Error())
+		base.SendError(err.Error())
 	}
+}
+
+//SendError 参数验证失败
+func (base *BaseController) SendError(msg string) {
+	base.sendJSON(400, "", msg)
+}
+
+//SendAuthRequire 发送用户身份认证请求
+func (base *BaseController) SendAuthRequire(msg string) {
+	base.sendJSON(401, "", msg)
+}
+
+//SendInternalError 发送5xx错误，统称code 500
+func (base *BaseController) SendInternalError(msg string) {
+	base.sendJSON(500, "", msg)
 }

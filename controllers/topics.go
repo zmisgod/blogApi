@@ -15,7 +15,7 @@ func (h *TopicsController) Get() {
 	)
 	lists, err := models.GetTopicLists(h.page, h.pageSize)
 	h.CheckError(err)
-	h.SendJSON(200, lists, "successful")
+	h.SendData(lists, "successful")
 }
 
 //@router /:topicsId [get]
@@ -29,5 +29,5 @@ func (h *TopicsController) GetTopicsDetail() {
 	}
 	lists, err := models.GetTopicsArticleLists(topicsID, h.page, h.pageSize)
 	h.CheckError(err)
-	h.SendJSON(200, lists, "successful")
+	h.SendData(lists, "successful")
 }

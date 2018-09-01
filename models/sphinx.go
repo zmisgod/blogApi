@@ -1,16 +1,18 @@
 package models
 
+//Sphinx Search  已作废
+//todo Elastic Search
+
 import (
 	"strings"
 	"time"
 )
 
-//SphinxSearch sphinx search
+//SphinxSearch demo
 func SphinxSearch(keyword string, page, pageSize int) (interface{}, error) {
-	SphinxClient = SphinxConnect()
-	SphinxClient.SetLimits((page-1)*pageSize, pageSize, 1000, 0)
+	sphinxClient.SetLimits((page-1)*pageSize, pageSize, 1000, 0)
 	// 查询，第一个参数是我们要查询的关键字，第二个是索引名称test1，第三个是备注
-	res, err := SphinxClient.Query(keyword, "main", "search article!")
+	res, err := sphinxClient.Query(keyword, "main", "search article!")
 	if err != nil {
 		return nil, err
 	}

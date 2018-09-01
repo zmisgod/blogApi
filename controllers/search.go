@@ -13,9 +13,9 @@ func (t *SearchController) Get() {
 		err     error
 	)
 	if keyword = t.GetString("keyword"); keyword == "" {
-		t.SendJSON(403, "", "empty search keyword")
+		t.SendError("empty search keyword")
 	}
 	res, err := models.SphinxSearch(keyword, t.page, t.pageSize)
 	t.CheckError(err)
-	t.SendJSON(200, res, "ok")
+	t.SendData(res, "ok")
 }

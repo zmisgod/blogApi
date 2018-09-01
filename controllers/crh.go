@@ -12,3 +12,8 @@ type CrhController struct {
 func (h *CrhController) GetTrainLists() {
 
 }
+
+//@router /:groupId [get]
+func (h *CrhController) Save() {
+
+}

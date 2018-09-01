@@ -1,13 +1,11 @@
 package models
 
 import (
-	"database/sql"
 	"fmt"
 	"strconv"
 	"strings"
 	"time"
 
-	"github.com/astaxie/beego"
 	"github.com/zmisgod/blogApi/util"
 )
 
@@ -26,15 +24,10 @@ type Comment struct {
 
 //getArticleCommentLists 获取文章评论列表
 func getArticleCommentLists(postID, page, pageSize int, orderby string) ([]Comment, error) {
-	var (
-		rows *sql.Rows
-		err  error
-	)
-	// var commentList CommentLists
 	commentList := []Comment{}
 
 	offset := (page - 1) * pageSize
-	rows, err = dbConn.Query(fmt.Sprintf("select created_at,author_name,author_url,content,id,user_id from wps_post_comments where post_id = %d order by created_at desc limit %d,%d", postID, offset, pageSize))
+	rows, err := dbConn.Query(fmt.Sprintf("select created_at,author_name,author_url,content,id,user_id from wps_post_comments where post_id = %d order by created_at desc limit %d,%d", postID, offset, pageSize))
 	defer rows.Close()
 	if err != nil {
 		return commentList, err
@@ -79,7 +72,7 @@ func GetArticleCommentLists(postID, page, pageSize int, orderby string) ([]Comme
 		if err == nil {
 			for index, comment := range commentLists {
 				if _, ok := userImages[comment.userID]; ok {
-					commentLists[index].AuthorImage = beego.AppConfig.String("StaticPrefix") + userImages[comment.userID]
+					commentLists[index].AuthorImage = userImages[comment.userID]
 				}
 			}
 		}

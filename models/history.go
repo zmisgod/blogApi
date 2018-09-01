@@ -19,9 +19,6 @@ type History struct {
 
 //SaveUserVisiteHistory 保存用户的浏览历史
 func SaveUserVisiteHistory(vType, vIP, vUserAgent, requestURI, refer string) int64 {
-	var (
-		err error
-	)
 	stmt, err := dbConn.Prepare("insert into wps_history (type,user_agent,ip,uri,refer,visite_time) values (?,?,?,?,?,?)")
 	defer stmt.Close()
 	if err == nil {
