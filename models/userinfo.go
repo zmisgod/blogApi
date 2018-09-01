@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
-	"time"
 
 	"github.com/astaxie/beego"
 )
@@ -12,11 +11,12 @@ import (
 //UserInfo 用户信息
 type UserInfo struct {
 	id        int
-	NickName  string     `json:"nickname"`
-	Sex       int        `json:"sex"`
-	HeadURL   string     `json:"head_url"`
-	Introduce string     `json:"introduce"`
-	Birthday  time.Time  `json:"birthday"`
+	NickName  string `json:"nickname"`
+	Sex       int    `json:"sex"`
+	HeadURL   string `json:"head_url"`
+	Introduce string `json:"introduce"`
+	birthday  []uint8
+	Birthday  string     `json:"birthday"`
 	UserLink  []UserLink `json:"user_link"`
 }
 
@@ -34,7 +34,7 @@ func GetUserInfo(userID int) (UserInfo, error) {
 		Scan(&user.id,
 			&user.NickName,
 			&user.HeadURL,
-			&user.Birthday,
+			&user.birthday,
 			&user.Introduce,
 			&user.Sex,
 		)
@@ -43,6 +43,7 @@ func GetUserInfo(userID int) (UserInfo, error) {
 	}
 	user.HeadURL = beego.AppConfig.String("StaticPrefix") + user.HeadURL
 	userLink, _ := GetUserLink(user.id)
+	user.Birthday = string(user.birthday)
 	user.UserLink = userLink
 	return user, nil
 }

@@ -6,3 +6,4 @@ main
 routers/*
 !routers/router.go
 nohup.out
+/static/public/*
