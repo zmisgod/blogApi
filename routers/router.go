@@ -65,6 +65,11 @@ func init() {
 				&controllers.BadgeController{},
 			),
 		),
+		beego.NSNamespace("/crh",
+			beego.NSInclude(
+				&controllers.CrhController{},
+			),
+		),
 	)
 	beego.AddNamespace(ns)
 	beego.ErrorController(&controllers.ErrorController{})
