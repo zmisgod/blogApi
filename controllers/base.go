@@ -42,20 +42,22 @@ func (base *BaseController) Prepare() {
 	c, _ := base.GetControllerAndAction()
 	controllerPrefix := strings.Replace(c, "Controller", "", 10)
 	devMode := beego.AppConfig.String("runmode")
-	if devMode != "dev" && controllerPrefix != "Crh" {
+	if devMode != "dev" {
 		saveLog := true
-		validIPs := beego.AppConfig.String("VaildIp")
-		validIPLists := strings.Split(validIPs, ",")
-		if base.refer == "" {
-			count := 0
-			for _, v := range validIPLists {
-				if base.ip == v {
-					count++
-					saveLog = false
+		if controllerPrefix != "Crh" {
+			validIPs := beego.AppConfig.String("VaildIp")
+			validIPLists := strings.Split(validIPs, ",")
+			if base.refer == "" {
+				count := 0
+				for _, v := range validIPLists {
+					if base.ip == v {
+						count++
+						saveLog = false
+					}
 				}
-			}
-			if count == 0 {
-				base.SendError("my api do not for you")
+				if count == 0 {
+					base.SendError("my api do not for you")
+				}
 			}
 		}
 		if saveLog {
