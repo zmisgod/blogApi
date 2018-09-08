@@ -42,7 +42,7 @@ func (base *BaseController) Prepare() {
 	c, _ := base.GetControllerAndAction()
 	controllerPrefix := strings.Replace(c, "Controller", "", 10)
 	devMode := beego.AppConfig.String("runmode")
-	if devMode != "dev" && controllerPrefix == "Crh" {
+	if devMode != "dev" && controllerPrefix != "Crh" {
 		saveLog := true
 		validIPs := beego.AppConfig.String("VaildIp")
 		validIPLists := strings.Split(validIPs, ",")
