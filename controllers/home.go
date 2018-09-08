@@ -9,7 +9,7 @@ type HomeController struct {
 	BaseController
 }
 
-// @router / [get]
+//@router / [get]
 func (h *HomeController) Get() {
 	var (
 		err error
