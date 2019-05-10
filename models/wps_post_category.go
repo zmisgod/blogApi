@@ -2,7 +2,6 @@ package models
 
 import (
 	"fmt"
-	"time"
 )
 
 //GetArticleListsByCategoryID 根据分类id获取文章列表
@@ -16,24 +15,24 @@ func GetArticleListsByCategoryID(cateID, page, pageSize int) ([]PostList, error)
 		return postList, err
 	}
 
-	for rows.Next() {
-		var aPost PostList
-		err = rows.Scan(
-			&aPost.ID,
-			&aPost.PostTitle,
-			&aPost.UserName,
-			&aPost.CategoryName,
-			&aPost.PostTitle,
-			&aPost.PostIntro,
-			&aPost.createdAt,
-		)
-		tm := time.Unix(int64(aPost.createdAt), 0)
-		aPost.CreatedAt = tm.Format("2006-01-02 15:04")
-		tags, _ := GetPostTagLists(aPost.ID)
-		aPost.Tags = tags
-		num, _ := GetArticleNumsByPost(aPost.ID)
-		aPost.NumInfo = num
-		postList = append(postList, aPost)
-	}
+	// for rows.Next() {
+	// 	var aPost PostList
+	// 	err = rows.Scan(
+	// 		&aPost.ID,
+	// 		&aPost.PostTitle,
+	// 		&aPost.UserName,
+	// 		&aPost.CategoryName,
+	// 		&aPost.PostTitle,
+	// 		&aPost.PostIntro,
+	// 		&aPost.createdAt,
+	// 	)
+	// 	tm := time.Unix(int64(aPost.createdAt), 0)
+	// 	aPost.CreatedAt = tm.Format("2006-01-02 15:04")
+	// 	tags, _ := GetPostTagLists(aPost.ID)
+	// 	aPost.Tags = tags
+	// 	num, _ := GetArticleNumsByPost(aPost.ID)
+	// 	aPost.NumInfo = num
+	// 	postList = append(postList, aPost)
+	// }
 	return postList, nil
 }

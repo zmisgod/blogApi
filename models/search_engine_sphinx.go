@@ -1,8 +1,5 @@
 package models
 
-//Sphinx Search  已作废
-//todo Elastic Search
-
 import (
 	"strings"
 	"time"

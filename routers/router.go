@@ -72,5 +72,29 @@ func init() {
 		),
 	)
 	beego.AddNamespace(ns)
+
+	admin := beego.NewNamespace("/admin",
+		beego.NSNamespace("/wps/article",
+			beego.NSInclude(
+				&controllers.AdminWpsArticleController{},
+			),
+		),
+		beego.NSNamespace("/wps/tag",
+			beego.NSInclude(
+				&controllers.AdminWpsTagController{},
+			),
+		),
+		beego.NSNamespace("/wps/topic",
+			beego.NSInclude(
+				&controllers.AdminWpsTopicController{},
+			),
+		),
+		beego.NSNamespace("/upload",
+			beego.NSInclude(
+				&controllers.AdminUploadController{},
+			),
+		),
+	)
+	beego.AddNamespace(admin)
 	beego.ErrorController(&controllers.ErrorController{})
 }

@@ -5,8 +5,8 @@ import (
 	"strings"
 )
 
-//CustomBadge 自定义的徽章
-type CustomBadge struct {
+//SvgBadge 自定义的徽章
+type SvgBadge struct {
 	width  int
 	height int
 	fSize  int
@@ -26,8 +26,8 @@ type CustomBadge struct {
 }
 
 //SetBadge 设置badge信息
-func SetBadge(width, height, fSize int, rx float64, lText, lColor, lFColor string, lLength, lX float64, rText, rColor, rFColor string, rLength, rX float64) *CustomBadge {
-	var badge CustomBadge
+func SetBadge(width, height, fSize int, rx float64, lText, lColor, lFColor string, lLength, lX float64, rText, rColor, rFColor string, rLength, rX float64) *SvgBadge {
+	var badge SvgBadge
 	badge.width = width
 	badge.height = height
 	badge.fSize = fSize
@@ -48,12 +48,12 @@ func SetBadge(width, height, fSize int, rx float64, lText, lColor, lFColor strin
 }
 
 //SaveBadge 保存徽章
-func (badge *CustomBadge) SaveBadge() (int, error) {
+func (badge *SvgBadge) SaveBadge() (int, error) {
 	return 1, nil
 }
 
 //Template 模板
-func (badge *CustomBadge) Template() (string, error) {
+func (badge *SvgBadge) Template() (string, error) {
 	result := `<svg xmlns="http://www.w3.org/2000/svg" width="$width" height="$height">
 	<metadata>Created by zmisgod. https://gen.zmis.me</metadata>
 	<linearGradient id="b" x2="0" y2="100%">

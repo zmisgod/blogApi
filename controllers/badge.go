@@ -11,20 +11,20 @@ type BadgeController struct {
 
 //@router / [get]
 func (b *BadgeController) Get() {
-	var width int = 225
-	var height int = 20
-	var fSize int = 11
+	var width = 225
+	var height = 20
+	var fSize = 11
 	var rx float64 = 3
 
-	var lText string = "https://gen.zmis.me"
-	var lColor string = "#00FFED"
-	var lFColor string = "#fff"
+	var lText = "https://gen.zmis.me"
+	var lColor = "#00FFED"
+	var lFColor = "#fff"
 	var lLength float64 = 124
 	var lX float64 = 62
 
-	var rText string = "author: zmisgod"
-	var rColor string = "#5A0988"
-	var rFColor string = "#fff"
+	var rText = "author: zmisgod"
+	var rColor = "#5A0988"
+	var rFColor = "#fff"
 	var rLength float64 = 101
 	var rX float64 = 175
 

@@ -6,19 +6,8 @@ import (
 	"fmt"
 
 	"github.com/astaxie/beego"
+	"github.com/zmisgod/blogApi/util"
 )
-
-//UserInfo 用户信息
-type UserInfo struct {
-	id        int
-	NickName  string `json:"nickname"`
-	Sex       int    `json:"sex"`
-	HeadURL   string `json:"head_url"`
-	Introduce string `json:"introduce"`
-	birthday  []uint8
-	Birthday  string     `json:"birthday"`
-	UserLink  []UserLink `json:"user_link"`
-}
 
 //userHeadImages 用户头像
 type userImages struct {
@@ -28,13 +17,13 @@ type userImages struct {
 }
 
 //GetUserInfo 用户信息
-func GetUserInfo(userID int) (UserInfo, error) {
-	user := UserInfo{}
+func GetUserInfo(userID int) (util.WpsUserInfo, error) {
+	user := util.WpsUserInfo{}
 	err := dbConn.QueryRow(fmt.Sprintf("select i.user_id,i.nickname, i.head_url,i.birthday,i.introduce,i.sex from  wps_users as u left join wps_users_info as i on u.id = i.user_id where u.id = %d", userID)).
-		Scan(&user.id,
+		Scan(&user.ID,
 			&user.NickName,
 			&user.HeadURL,
-			&user.birthday,
+			&user.Birthday,
 			&user.Introduce,
 			&user.Sex,
 		)
@@ -42,9 +31,9 @@ func GetUserInfo(userID int) (UserInfo, error) {
 		return user, errors.New("未找到此人")
 	}
 	user.HeadURL = beego.AppConfig.String("StaticPrefix") + user.HeadURL
-	userLink, _ := GetUserLink(user.id)
-	user.Birthday = string(user.birthday)
-	user.UserLink = userLink
+	// userLink, _ := GetUserLink(user.id)
+	// user.Birthday = string(user.birthday)
+	// user.UserLink = userLink
 	return user, nil
 }
 
